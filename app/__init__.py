@@ -1,24 +1,21 @@
 from flask import Flask
-from config import Config
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
 from app.routes import bp
+from config import Config
+from app.extensions import db, bp, login_manager
 
-config = Config()
-db = SQLAlchemy()
-login_manager=LoginManager()
-login_manager.login_view = "login"
 
-def create_app():
+def create_app(config: Config) -> Flask:
+    """Create an instance of the Spotify App"""
     app = Flask(__name__)
     # Store our configurations in the Flask app
     app.config.from_object(config)
-    db.init_app(app)
-    #Registers all the routes in the app's blueprint
-    app.register_blueprint(bp)
-
+    # Registers all the routes in the app's blueprint
+    # Login
+    login_manager.init_app(app)
     with app.app_context():
-        from . import routes, models
+        from . import models 
+        app.register_blueprint(bp)
+        db.init_app(app)
         db.create_all()
 
     return app

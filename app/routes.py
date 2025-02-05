@@ -1,6 +1,5 @@
-from flask import Blueprint, render_template, flash
-
-bp = Blueprint("main", __name__)
+from flask import render_template, flash, request
+from app.extensions import bp
 
 
 # ----------------- Main App Routes -----------------
@@ -12,17 +11,18 @@ def index():
 
 @bp.route("/login", methods=["GET", "POST"])
 def login():
-    return "login"
+    return render_template("login.html")
 
 
 @bp.route("/register", methods=["GET", "POST"])
 def register():
-    return "register"
+    return render_template("register.html")
 
 
 @bp.route("/logout")
 def logout():
-    return "logout"
+    flash("Logged out!")
+    return render_template("index.html")
 
 
 # ----------------- Spotify Routes -----------------
