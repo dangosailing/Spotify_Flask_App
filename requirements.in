@@ -1,0 +1,9 @@
+spotipy
+flask
+flask-login 
+flask_sqlalchemy
+pytest
+pytest-cov
+bcrypt
+pandas
+numpy
