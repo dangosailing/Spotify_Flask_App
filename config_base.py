@@ -3,4 +3,4 @@ class Config:
     CLIENT_SECRET = ""
     REDIRECT_URI = "http://localhost:5000/callback"
     SECRET_KEY = ""
-    SQLALCHEMY_DATABASE_URI = "sqlite:///spotifun.db"
+    SQLALCHEMY_DATABASE_URI = "sqlite:///spotify_app.db"
