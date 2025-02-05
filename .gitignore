@@ -172,3 +172,4 @@ cython_debug/
 
 # Project Specific Files
 config.py
+config_test.py
