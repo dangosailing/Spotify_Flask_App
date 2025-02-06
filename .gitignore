@@ -173,3 +173,4 @@ cython_debug/
 # Project Specific Files
 config.py
 config_test.py
+/api_example_responses
