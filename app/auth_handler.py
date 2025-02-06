@@ -1,5 +1,5 @@
 from app.models import User
-from app.utils import hash_password
+from app.utils import create_user
 from app.extensions import db
 
 class AuthHandler:
@@ -8,9 +8,7 @@ class AuthHandler:
         # Register user and redirect user to login
         if User.query.filter_by(username=username).first():
             return False
-        hashed_pwd = hash_password(password)
-        new_user= User(username=username, password=hashed_pwd)
-        
+        new_user = create_user(username=username, password=password)
         db.session.add(new_user)
         db.session.commit()
         return True

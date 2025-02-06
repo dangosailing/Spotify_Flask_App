@@ -1,6 +1,8 @@
 from bcrypt import gensalt, hashpw
+from app.models import User
 
-def hash_password(password: str):
-    """ Hash password using bcrypt """
+def create_user(username:str, password:str) -> User:
+    """ Returns a User object with hashed password """
     salt = gensalt()
-    return hashpw(password.encode(), salt).decode()
+    hashed_pw = hashpw(password.encode(), salt).decode()
+    return User(username=username, password=hashed_pw)
