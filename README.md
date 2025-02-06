@@ -27,3 +27,13 @@ login route redirect to home ✅
 create test instance of app ✅
 test login route ✅ (need better asserts)
 add spotify auth to login 
+retool test funtions!!! (NO API HANDLER)
+
+# GOALS
+user can save playlist info to csv
+user can manipulate playlist
+app saves favorite artists
+app saves favorite tracks
+this cretes a ranking system among user to see the most popular artist, genres, tracks
+
+# IF TESTING ON A MAC PORT 5000 MIGHT BE SPOKEN FOR BY AIR PLAY
