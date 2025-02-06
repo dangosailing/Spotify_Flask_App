@@ -17,3 +17,13 @@ bcrypt - for secure password management
 CLIENT_ID (from spotify api)
 CLIENT_SECRET (from spotify api)
 SECRET_KEY (set appropriately)
+
+# ACTION PLAN
+test create user ✅
+complete reg route ✅
+commit ✅
+test register route ✅ (user was properly added in test case, but how to best assert?)
+login route redirect to home ✅
+create test instance of app ✅
+test login route ✅ (need better asserts)
+add spotify auth to login 
