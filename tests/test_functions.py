@@ -1,4 +1,4 @@
-from app.utils import create_user
+from app.auth_handler import AuthHandler
 
 def test_create_user():
     """
@@ -9,7 +9,8 @@ def test_create_user():
     
     username= "John Doe"
     password= "test123"
-    user = create_user(username=username, password=password)
+    auth_handler = AuthHandler()
+    user = auth_handler.create_user(username=username, password=password)
     
     assert user.username == "John Doe"
     # Ensure password is hashed
