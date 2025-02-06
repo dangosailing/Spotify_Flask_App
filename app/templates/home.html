@@ -1,6 +1,11 @@
-{% extends "base.html" %}
-
-{% block content %}
-<h1>Welcome {{ user.username }}</h1>
+{% extends "base.html" %} {% block content %}
+<h1>Welcome {{ user.username }}!</h1>
+<div>
+  <p>id:{{ spotify_profile.id }}</p>
+  <p>followers: {{ spotify_profile.followers }}</p>
+  <img src="{{ spotify_profile.image_src }}" alt="profile-picture">
+  </div>
+{{ spotify_profile.images }}
+<a href="{{ url_for('main.logout') }}">Logout</a>
 
 {% endblock %}
