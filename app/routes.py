@@ -94,13 +94,15 @@ def home():
     }
 
     top_artists = []
+
     for artist in user_top_artists["items"]:
+        flash(", ".join(artist["genres"]))
         top_artists.append(
             {
                 "id": artist["id"],
                 "name": artist["name"],
                 "followers": artist["followers"]["total"],
-                "genres": artist["genres"],
+                "genres": ", ".join(artist["genres"]),
                 "href": artist["external_urls"]["spotify"],
                 "image_src": artist["images"][0]["url"],
             }
@@ -170,10 +172,13 @@ def playlist(playlist_id: str):
                 "uri": track["track"]["uri"],
             }
         )
-
+    playlist_owner = playlist["owner"]["id"]
     return render_template(
         "playlist.html",
         user=current_user,
         playlist_id=playlist_id,
+        playlist_owner=playlist_owner,
+        playlist_name=playlist["name"],
+        spotify_user_id=session.get("spotify_user_id"),
         tracks=playlists_tracks,
     )
