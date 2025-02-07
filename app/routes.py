@@ -85,7 +85,7 @@ def home():
     user_profile = spotify.current_user()
     user_top_artists = spotify.current_user_top_artists()
     user_top_tracks = spotify.current_user_top_tracks()
-    
+    session["spotify_user_id"] = user_profile["id"]
     spotify_profile = {
         "id": user_profile["id"],
         "followers": user_profile["followers"]["total"],
@@ -141,28 +141,39 @@ def playlists():
                 "href": playlist["external_urls"]["spotify"],
             }
         )
-    return render_template(
-        "playlists.html",
-        user=current_user,
-        playlists = playlists
-    )
-    
+    return render_template("playlists.html", user=current_user, playlists=playlists)
+
+
 @bp.route("/playlist/<playlist_id>", methods=["GET", "POST"])
 @login_required
-def playlist(playlist_id:str):
+def playlist(playlist_id: str):
+    """Display playlist tracks with GET, remove tracks using POST requests"""
+    if request.method == "POST":
+        track_id = request.form["track_id"]
+        playlist_position = request.form["playlist_position"]
+        flash(f"{track_id} {playlist_position}")
+        response = spotify.user_playlist_remove_all_occurrences_of_tracks(
+            user=session.get("spotify_user_id"),
+            playlist_id=playlist_id,
+            tracks=[{"uri": track_id, "positions": [playlist_position]}],
+        )
+        flash(response)
+
     playlist = spotify.playlist(playlist_id=playlist_id)
     playlists_tracks = []
     for track in playlist["tracks"]["items"]:
-        
         playlists_tracks.append(
             {
                 "id": track["track"]["id"],
-                "name": track["track"],
+                "name": track["track"]["name"],
                 "popularity": track["track"]["popularity"],
+                "uri": track["track"]["uri"],
             }
         )
+
     return render_template(
         "playlist.html",
         user=current_user,
-        tracks=playlists_tracks
+        playlist_id=playlist_id,
+        tracks=playlists_tracks,
     )
