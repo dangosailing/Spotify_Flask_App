@@ -4,13 +4,16 @@
   <p>id:{{ spotify_profile.id }}</p>
   <p>followers: {{ spotify_profile.followers }}</p>
   {% if spotify_profile.image_src | length > 0 %}
-  <img src="{{ spotify_profile.image_src }}" alt="user-profile-picture" width="50px" />
+  <img
+    src="{{ spotify_profile.image_src }}"
+    alt="user-profile-picture"
+    width="50px"
+  />
   {% endif %}
 </div>
 {{ spotify_profile.images }}
 <a href="{{ url_for('main.playlists') }}">Recent Playlists</a>
 <a href="{{ url_for('main.logout') }}">Logout</a>
-
 
 <div style="display: flex; width: 100%">
   <div style="width: 100%">
@@ -18,18 +21,25 @@
       <h2>Your top artists</h2>
       {% for artist in top_artists %}
       <li>
-        <div style="display: flex; border: 10px solid black">
+        <div
+          style="
+            display: flex;
+            border: 1px solid black;
+            height: 152px;
+            border-radius: 12px;
+          "
+        >
           <div style="display: flex">
             <img
               src="{{ artist.image_src }}"
               alt="artist-profile-picture"
-              width="160px"
-              height="160px"
+              width="140px"
+              height="140px"
             />
             <div style="padding: 10px">
-              <p>{{ artist.name }}</p>
-              <p>Genres: {% for genre in genres %} genre {% endfor %}</p>
-              <p>Followers: {{ artist.followers }}</p>
+              <div>{{ artist.name }}</div>
+              <div>Genres: {{artist.genres}}</div>
+              <div>Followers: {{ artist.followers }}</div>
               <a href="{{artist.href}}">Open in spotify</a>
             </div>
           </div>
@@ -42,22 +52,17 @@
     <ul style="list-style-type: none">
       <h2>Your top tracks</h2>
       {% for track in top_tracks %}
-      <li>
-        <div style="display: flex; border: 10px solid black">
-          <div style="display: flex">
-            <img
-              src="{{ track.image_src }}"
-              alt="track-profile-picture"
-              width="160px"
-              height="160px"
-            />
-            <div style="padding: 10px">
-              <p>{{ track.name }}</p>
-              <a href="{{track.href}}">Open in spotify</a>
-            </div>
-          </div>
-        </div>
-      </li>
+      <iframe
+        style="border-radius: 12px"
+        src="https://open.spotify.com/embed/track/{{track['id']}}?utm_source=generator"
+        width="100%"
+        height="152"
+        frameborder="0"
+        allowfullscreen=""
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy"
+      ></iframe>
+
       {% endfor %}
     </ul>
   </div>
