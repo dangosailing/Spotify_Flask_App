@@ -145,6 +145,19 @@ def playlists():
     return render_template("playlists.html", user=current_user, playlists=playlists)
 
 
+@bp.route("/playlist/unfollow/<playlist_id>", methods=["GET"])
+@login_required
+def unfollow_playlist(playlist_id: str):
+    spotify.current_user_unfollow_playlist(playlist_id)
+    return redirect(url_for("main.playlists"))
+
+
+@bp.route("/playlist/create/<playlist_id>", methods=["POST"])
+@login_required
+def create_playlist():
+    pass
+
+
 @bp.route("/playlist/<playlist_id>", methods=["GET", "POST"])
 @login_required
 def playlist(playlist_id: str):
@@ -152,14 +165,11 @@ def playlist(playlist_id: str):
     if request.method == "POST":
         track_id = request.form["track_id"]
         playlist_position = request.form["playlist_position"]
-        flash(f"{track_id} {playlist_position}")
-        response = spotify.user_playlist_remove_all_occurrences_of_tracks(
+        spotify.user_playlist_remove_all_occurrences_of_tracks(
             user=session.get("spotify_user_id"),
             playlist_id=playlist_id,
             tracks=[{"uri": track_id, "positions": [playlist_position]}],
         )
-        flash(response)
-
     playlist = spotify.playlist(playlist_id=playlist_id)
     playlists_tracks = []
     for track in playlist["tracks"]["items"]:
