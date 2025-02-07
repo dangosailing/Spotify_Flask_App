@@ -12,13 +12,13 @@ class AuthHandler:
         """ Returns a SpotifyOAuth object to handle authorization """
         #Allows us to save the token in a session using Flask
         cache_handler = FlaskSessionCacheHandler(session)
-
+        scope = "playlist-modify-private,playlist-modify-public,playlist-read-private,user-top-read"
         #Handles authorization, the scope of our access to user data 
         auth_manager=SpotifyOAuth(
             client_id=Config().CLIENT_ID,
             client_secret=Config().CLIENT_SECRET,
             redirect_uri=Config().REDIRECT_URI,
-            scope="playlist-read-private,user-top-read",
+            scope=scope,
             cache_handler=cache_handler,
             show_dialog=True)
         
