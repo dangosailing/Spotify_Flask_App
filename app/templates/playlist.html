@@ -1,21 +1,24 @@
 {% extends "base.html" %} {% block content %}
-<h1>Your recent playlists</h1>
+<h1>{{playlist_name}}</h1>
+<h2>Owner: {{ playlist_owner}}</h2>
 
 <a href="{{ url_for('main.logout') }}">Logout</a>
+<a href="{{ url_for('main.playlists') }}">Back</a>
 
 <div style="display: flex; width: 100%">
   <div style="width: 100%">
-      <h2>Playlist</h2>
       <ul>
         {% for track in tracks %}
         <li>
           {{loop.index}} - {{track.name}}
+          {% if playlist_owner == spotify_user_id %}
           <form action="{{ url_for('main.playlist', playlist_id=playlist_id) }}" method="post">
             <input type="hidden" name="track_id" value="{{ track.id}}">
             <input type="hidden" name="playlist_position" value="{{ loop.index }}">
             <input type="hidden" name="track_uri" value="{{ track.uri}}">
             <button type="submit">Remove track from playlist</button>
           </form>
+          {% endif %}
         </li>
         {% endfor %}
       </form>

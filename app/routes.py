@@ -96,7 +96,6 @@ def home():
     top_artists = []
 
     for artist in user_top_artists["items"]:
-        flash(", ".join(artist["genres"]))
         top_artists.append(
             {
                 "id": artist["id"],
