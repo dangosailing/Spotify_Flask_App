@@ -1,0 +1,27 @@
+{% extends "base.html" %} {% block content %}
+<h1>Your recent playlists</h1>
+
+<a href="{{ url_for('main.logout') }}">Logout</a>
+
+<div style="display: flex; width: 100%">
+  <div style="width: 100%">
+    <ul style="list-style-type: none">
+      <h2>Your recent playlists</h2>
+      {% for playlist in playlists %}
+      <li>
+        <div style="display: flex; border: 10px solid black">
+          <div style="display: flex">
+            <div style="padding: 10px">
+              <p>{{ playlist.name }}</p>
+              <a href="{{playlist.href}}">Open in spotify</a>
+              <a href="{{ url_for('main.playlist', playlist_id=playlist.id) }}">View playlist</a>
+            </div>
+          </div>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+{% endblock %}

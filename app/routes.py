@@ -1,4 +1,12 @@
-from flask import render_template, flash, request, redirect, url_for, session
+from flask import (
+    render_template,
+    flash,
+    request,
+    redirect,
+    url_for,
+    session,
+)
+from pprint import pp
 from flask_login import login_required, login_user, logout_user, current_user
 from app.extensions import bp
 from app.auth_handler import AuthHandler
@@ -74,13 +82,87 @@ def callback():
 @bp.route("/home", methods=["GET", "POST"])
 @login_required
 def home():
-    response = spotify.current_user()
+    user_profile = spotify.current_user()
+    user_top_artists = spotify.current_user_top_artists()
+    user_top_tracks = spotify.current_user_top_tracks()
+    
     spotify_profile = {
-        "followers": response["followers"]["total"],
-        "id": response["id"],
-        "href": response["href"],
-        "image_src": response["images"][0]["url"],
+        "id": user_profile["id"],
+        "followers": user_profile["followers"]["total"],
+        "href": user_profile["href"],
+        "image_src": user_profile["images"],
     }
+
+    top_artists = []
+    for artist in user_top_artists["items"]:
+        top_artists.append(
+            {
+                "id": artist["id"],
+                "name": artist["name"],
+                "followers": artist["followers"]["total"],
+                "genres": artist["genres"],
+                "href": artist["external_urls"]["spotify"],
+                "image_src": artist["images"][0]["url"],
+            }
+        )
+
+    top_tracks = []
+    for track in user_top_tracks["items"]:
+        top_tracks.append(
+            {
+                "id": track["id"],
+                "name": track["name"],
+                "artists": track["artists"],
+                "popularity": track["popularity"],
+                "href": track["external_urls"]["spotify"],
+                "image_src": track["album"]["images"][0]["url"],
+            }
+        )
+
     return render_template(
-        "home.html", spotify_profile=spotify_profile, user=current_user
+        "home.html",
+        spotify_profile=spotify_profile,
+        user=current_user,
+        top_artists=top_artists,
+        top_tracks=top_tracks,
+    )
+
+
+@bp.route("/playlists", methods=["GET", "POST"])
+@login_required
+def playlists():
+    user_recent_playlists = spotify.current_user_playlists()
+    playlists = []
+    for playlist in user_recent_playlists["items"]:
+        playlists.append(
+            {
+                "id": playlist["id"],
+                "name": playlist["name"],
+                "href": playlist["external_urls"]["spotify"],
+            }
+        )
+    return render_template(
+        "playlists.html",
+        user=current_user,
+        playlists = playlists
+    )
+    
+@bp.route("/playlist/<playlist_id>", methods=["GET", "POST"])
+@login_required
+def playlist(playlist_id:str):
+    playlist = spotify.playlist(playlist_id=playlist_id)
+    playlists_tracks = []
+    for track in playlist["tracks"]["items"]:
+        
+        playlists_tracks.append(
+            {
+                "id": track["track"]["id"],
+                "name": track["track"],
+                "popularity": track["track"]["popularity"],
+            }
+        )
+    return render_template(
+        "playlist.html",
+        user=current_user,
+        tracks=playlists_tracks
     )

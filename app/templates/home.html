@@ -3,9 +3,64 @@
 <div>
   <p>id:{{ spotify_profile.id }}</p>
   <p>followers: {{ spotify_profile.followers }}</p>
-  <img src="{{ spotify_profile.image_src }}" alt="profile-picture">
-  </div>
+  {% if spotify_profile.image_src | length > 0 %}
+  <img src="{{ spotify_profile.image_src }}" alt="user-profile-picture" width="50px" />
+  {% endif %}
+</div>
 {{ spotify_profile.images }}
+<a href="{{ url_for('main.playlists') }}">Recent Playlists</a>
 <a href="{{ url_for('main.logout') }}">Logout</a>
+
+
+<div style="display: flex; width: 100%">
+  <div style="width: 100%">
+    <ul style="list-style-type: none">
+      <h2>Your top artists</h2>
+      {% for artist in top_artists %}
+      <li>
+        <div style="display: flex; border: 10px solid black">
+          <div style="display: flex">
+            <img
+              src="{{ artist.image_src }}"
+              alt="artist-profile-picture"
+              width="160px"
+              height="160px"
+            />
+            <div style="padding: 10px">
+              <p>{{ artist.name }}</p>
+              <p>Genres: {% for genre in genres %} genre {% endfor %}</p>
+              <p>Followers: {{ artist.followers }}</p>
+              <a href="{{artist.href}}">Open in spotify</a>
+            </div>
+          </div>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div style="width: 100%">
+    <ul style="list-style-type: none">
+      <h2>Your top tracks</h2>
+      {% for track in top_tracks %}
+      <li>
+        <div style="display: flex; border: 10px solid black">
+          <div style="display: flex">
+            <img
+              src="{{ track.image_src }}"
+              alt="track-profile-picture"
+              width="160px"
+              height="160px"
+            />
+            <div style="padding: 10px">
+              <p>{{ track.name }}</p>
+              <a href="{{track.href}}">Open in spotify</a>
+            </div>
+          </div>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
 
 {% endblock %}
