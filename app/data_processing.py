@@ -28,8 +28,7 @@ def data_plot_to_base64(filename: str, x_col: str, y_col: str) -> str:
     ax.xaxis.set_tick_params(labelrotation=20)
     ax.xaxis.set_label_position(position="top")
     ax.scatter(x, y)
-
-    # Save it to a temporary buffer.
+    # Save it to a temporary buffer
     buf = BytesIO()
     fig.savefig(buf, format="png")
     return base64.b64encode(buf.getbuffer()).decode("ascii")
