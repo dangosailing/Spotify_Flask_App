@@ -10,7 +10,10 @@
       <ul>
         {% for track in tracks %}
         <li>
-          {{loop.index}} - {{track.name}}
+          {{loop.index}} - {{track.name}} -
+          {% for artist in track.artists %}
+          {{ artist.name }} 
+          {% endfor %} 
           {% if playlist_owner == spotify_user_id %}
           <form action="{{ url_for('main.playlist', playlist_id=playlist_id) }}" method="post">
             <input type="hidden" name="track_id" value="{{ track.id}}">

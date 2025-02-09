@@ -1,23 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Spotify App</title>
-</head>
-<body>
-    {% block content %}
-    {% endblock %}
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <div style="border:1px solid black; margin-top: 10px;">
-    <ul>
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
+    <style>
+      table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      td,
+      th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+      }
+
+      tr:nth-child(even) {
+        background-color: #dddddd;
+      }
+    </style>
+
+    {% block head_includes %} {% endblock %}
+  </head>
+  <body>
+    <a href="https://developer.spotify.com/"
+      ><img
+        src="https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Black-300x300.png"
+        width="50px"
+        alt="spotify_profile_black"
+    /></a>
+    {% with messages = get_flashed_messages() %} {% if messages %}
+    <div style="border: 1px solid black; margin-top: 10px">
+      <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
     </div>
-    {% endif %}
-    {% endwith %}
-</body>
+    {% endif %} {% endwith %} {% block content %}{% endblock %}
+  </body>
 </html>

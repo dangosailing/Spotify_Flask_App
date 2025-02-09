@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Singles popularity over time</h1>
+<div>
+  <a href="{{ url_for('main.logout') }}">Logout</a>
+  <a href="{{ url_for('main.home') }}">Back</a>
+</div>
+
+<div style="display:flex; width: 100%;">
+  <div style="border:1px solid black; flex-grow: 1; margin-right:10px">
+  <img src='data:image/png;base64,{{data_plot}}' alt="singles_popularity_over_time"/>
+</div>
+<div style="border:1px solid black; flex-grow: 1;">
+  <table>
+    <tr>
+      <th>Single</th>
+      <th>Release</th>
+      <th>Popularity</th>
+    </tr>
+  
+    {% for item in singles_data %}
+    <tr>
+    <td>{{item.name}}</td>
+    <td>{{item.popularity}}</td>
+    <td>{{item.release}}</td>
+    </tr>
+    {% endfor %}
+  
+    </tr>
+  </table>
+</div>
+<div>
+
+{% endblock %}
+

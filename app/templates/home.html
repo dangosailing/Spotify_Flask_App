@@ -1,17 +1,32 @@
 {% extends "base.html" %} {% block content %}
 <h1>Welcome {{ user.username }}!</h1>
+<p>Current weather: {{ current_weather }}</p>
 <div>
-  <p>id:{{ spotify_profile.id }}</p>
+  <p>spotify id:{{ spotify_profile.id }}</p>
   <p>followers: {{ spotify_profile.followers }}</p>
   {% if spotify_profile.image_src | length > 0 %}
-  <img
-    src="{{ spotify_profile.image_src }}"
+  <div
     alt="user-profile-picture"
-    width="50px"
-  />
+    style="background-image: url('{{ spotify_profile.image_src }}'); 
+width: 125px;
+height: 125px;
+background-position: center center;
+background-repeat: no-repeat;
+border-radius:50%"
+  ></div>
+<iframe
+  style="border-radius: 12px"
+  src="https://open.spotify.com/embed/track/{{ weather_track_id }}?utm_source=generator"
+  width="100%"
+  height="152"
+  frameborder="0"
+  allowfullscreen=""
+  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+  loading="lazy"
+></iframe>
+
   {% endif %}
 </div>
-{{ spotify_profile.images }}
 <a href="{{ url_for('main.playlists') }}">Recent Playlists</a>
 <a href="{{ url_for('main.logout') }}">Logout</a>
 
@@ -35,12 +50,15 @@
               alt="artist-profile-picture"
               width="152px"
               height="152px"
-              style="border-radius: 10px;"
+              style="border-radius: 10px"
             />
             <div style="padding: 10px">
               <div>{{ artist.name }}</div>
               <div>Genres: {{artist.genres}}</div>
               <div>Followers: {{ artist.followers }}</div>
+              <a href="{{ url_for('main.get_artist', artist_id=artist.id) }}"
+                >Artist stats</a
+              >
               <a href="{{artist.href}}">Open in spotify</a>
             </div>
           </div>
@@ -53,17 +71,32 @@
     <ul style="list-style-type: none">
       <h2>Your top tracks</h2>
       {% for track in top_tracks %}
-      <iframe
-        style="border-radius: 12px"
-        src="https://open.spotify.com/embed/track/{{track['id']}}?utm_source=generator"
-        width="100%"
-        height="152"
-        frameborder="0"
-        allowfullscreen=""
-        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-        loading="lazy"
-      ></iframe>
-
+      <li>
+        <div
+          style="
+            display: flex;
+            border: 1px solid black;
+            height: 152px;
+            border-radius: 12px;
+          "
+        >
+          <div style="display: flex">
+            <img
+              src="{{track.image_src}}"
+              alt="album-artwork"
+              width="152px"
+              height="152px"
+              style="border-radius: 10px"
+            />
+            <div style="padding: 10px">
+              <div>{{ track.name }}</div>
+              <div>Popularity: {{ track.popularity }}</div>
+              
+              <a href="{{track.href}}">Open in spotify</a>
+            </div>
+          </div>
+        </div>
+      </li>
       {% endfor %}
     </ul>
   </div>
