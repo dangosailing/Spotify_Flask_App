@@ -12,6 +12,8 @@ from app.extensions import bp
 from app.auth_handler import AuthHandler
 from spotipy import Spotify
 from spotipy import FlaskSessionCacheHandler
+from app.data_processing import list_to_csv, data_plot_to_base64
+from app.api_geo import get_weather_conditions
 
 auth_handler = AuthHandler()
 cache_handler = FlaskSessionCacheHandler(session)
@@ -82,6 +84,9 @@ def callback():
 @bp.route("/home", methods=["GET", "POST"])
 @login_required
 def home():
+    current_weather = get_weather_conditions()
+    weather_track = spotify.search(q=f"{current_weather}", limit=1)
+    weather_track_id = weather_track["tracks"]["items"][0]["id"]
     user_profile = spotify.current_user()
     user_top_artists = spotify.current_user_top_artists()
     user_top_tracks = spotify.current_user_top_tracks()
@@ -90,7 +95,7 @@ def home():
         "id": user_profile["id"],
         "followers": user_profile["followers"]["total"],
         "href": user_profile["href"],
-        "image_src": user_profile["images"],
+        "image_src": user_profile["images"][0]["url"],
     }
 
     top_artists = []
@@ -126,7 +131,51 @@ def home():
         user=current_user,
         top_artists=top_artists,
         top_tracks=top_tracks,
+        current_weather=current_weather,
+        weather_track_id=weather_track_id,
     )
+
+
+@bp.route("/artists/<artist_id>", methods=["GET", "POST"])
+@login_required
+def get_artist(artist_id: str):
+
+    # GET SINGLES DATA
+    response_artist_singles = spotify.artist_albums(
+        artist_id=artist_id, include_groups="single", limit=20
+    )
+    singles_ids = []
+    for single in response_artist_singles["items"]:
+        singles_ids.append(single["id"])
+
+    # GET ALBUM DATA
+    artist_albums = spotify.artist_albums(
+        artist_id=artist_id, include_groups="album", limit=20
+    )
+    album_ids = []
+    for album in artist_albums["items"]:
+        album_ids.append(album["id"])
+
+    response_albums_data = spotify.albums(album_ids)
+    response_singles_data = spotify.albums(singles_ids)
+
+    singles_data = []
+    albums_data = []
+
+    for item in response_singles_data["albums"]:
+        singles_data.append(
+            {
+                "id": item["id"],
+                "name": item["name"],
+                "popularity": item["popularity"],
+                "release": item["release_date"],
+                "no_tracks": item["total_tracks"],
+            }
+        )
+    filename = f"{artist_id}_singles"
+    list_to_csv(singles_data, filename=filename)
+    data_plot = data_plot_to_base64(filename, x_col="release", y_col="popularity")
+    return render_template("artist.html", data_plot=data_plot, singles_data=singles_data)
 
 
 @bp.route("/playlists", methods=["GET", "POST"])
