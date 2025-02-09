@@ -174,3 +174,4 @@ cython_debug/
 config.py
 config_test.py
 /api_example_responses
+app/data
