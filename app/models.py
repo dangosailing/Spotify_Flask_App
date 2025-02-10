@@ -50,7 +50,7 @@ class Playlist(db.Model):
 class Artist(db.Model):
     spotify_id = db.Column(db.String(100), primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    tracks = db.relationship("Track", secondary=artist_track, backref="tracks")
+    features = db.relationship("Track", secondary=artist_track, backref="features")
 
     def __repr__(self):
         return f"Artist('{self.title}')"
