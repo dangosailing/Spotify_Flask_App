@@ -228,13 +228,17 @@ def playlists():
                 "id": playlist["id"],
                 "name": playlist["name"],
                 "href": playlist["external_urls"]["spotify"],
+                "image_src": (
+                    playlist["images"][0]["url"]
+                    if playlist["images"] != None
+                    else "https://placehold.co/300x300?text=Image+Unavailable"
+                ),
             }
         )
-
     return render_template("playlists.html", user=current_user, playlists=playlists)
 
 
-@bp.route("/playlist/unfollow/<playlist_id>", methods=["GET"])
+@bp.route("/playlist/unfollow/<playlist_id>", methods=["POST", "GET"])
 @login_required
 def unfollow_playlist(playlist_id: str):
     spotify.current_user_unfollow_playlist(playlist_id)
@@ -271,6 +275,7 @@ def remove_from_playlist(track_id: str):
 @bp.route("/playlist/<playlist_id>", methods=["GET", "POST"])
 @login_required
 def playlist(playlist_id: str):
+    # TODO REMOVE FIRST PART REFACTORED INTO THE REMOVE TRACK ROUTE
     """Display playlist tracks with GET, remove tracks using POST requests"""
     if request.method == "POST":
         track_id = request.form["track_id"]
@@ -302,3 +307,25 @@ def playlist(playlist_id: str):
         spotify_user_id=session.get("spotify_user_id"),
         tracks=playlists_tracks,
     )
+
+
+@bp.route("/playlist/save/<playlist_id>", methods=["GET", "POST"])
+@login_required
+def save_playlist(playlist_id: str):
+    from app.api_handler import ApiHandler
+
+    api_handler = ApiHandler()
+    playlist = spotify.playlist(playlist_id=playlist_id)
+    api_handler.create_playlist(playlist=playlist, current_user=current_user)
+    flash("Playlist saved to database")
+    return redirect(url_for("main.playlist", playlist_id=playlist_id))
+
+
+@bp.route("/playlist/backups", methods=["GET", "POST"])
+@login_required
+def get_playlist_backups():
+    from app.api_handler import ApiHandler
+    api_handler = ApiHandler()
+    playlist_backups = api_handler.get_playlist_backups(current_user=current_user)
+    flash(playlist_backups)
+    return render_template("playlist_backups.html", playlists=playlist_backups)
