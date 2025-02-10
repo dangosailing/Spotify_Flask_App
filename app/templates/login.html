@@ -1,14 +1,15 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 <h1>Login</h1>
-<form action="{{ url_for('main.login') }}" method="post">
-    <input type="hidden" name="csrf_token" value = "{{ csrf_token() }}" />
+<a href="{{ url_for('main.register') }}">Register</a>
+<div style="margin-top: 10px">
+  <form action="{{ url_for('main.login') }}" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
     <label for="username">Enter username:</label>
-    <input type="text" name="username" id="form-username" required>
+    <input type="text" name="username" id="form-username" required />
     <label for="password">Enter password:</label>
-    <input type="password" name="password" id="form-password" required>
+    <input type="password" name="password" id="form-password" required />
     <button type="submit">Login</button>
-</form>
+  </form>
+</div>
 
 {% endblock %}
