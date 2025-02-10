@@ -2,6 +2,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask import Blueprint
+from flask_wtf.csrf import CSRFProtect
 
 # ------ Database
 db = SQLAlchemy()
@@ -11,3 +12,5 @@ login_manager=LoginManager()
 login_manager.login_view = "main.login"
 # ------ Blueprint
 bp = Blueprint("main", __name__)
+# ------ CSRF protection
+csrf = CSRFProtect()
