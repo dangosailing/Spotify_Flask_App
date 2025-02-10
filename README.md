@@ -1,6 +1,10 @@
 # Spotify App
 Search Spotify artists, tracks and playlists. Manage your own playlists, get a csv doc of your playlists
 
+## APIs
+spotify -  used to fetch user profile, songs, playlists and artists data and alter user playlists
+open meteo - to fetch weather data to display on home page. The current weather is used to generate a query for a matching track
+
 ## Dependencies
 spotipy - handles auth and spotify api requests
 flask - webserver interface and session storage of token
@@ -9,6 +13,7 @@ pandas, numpy - handle managing and visualizing data
 pytest - for testing code
 pytest-cov - for testing code coverage
 bcrypt - for secure password management
+geocoder - get coordinates from local ip for weather API
 
 # How to run project
 >>python -m venv venv
@@ -38,4 +43,5 @@ app saves favorite tracks
 this cretes a ranking system among user to see the most popular artist, genres, tracks
 Backup and recreate playlist from database
 
-# IF TESTING ON A MAC PORT 5000 MIGHT BE SPOKEN FOR BY AIR PLAY
+# Additional notes
+IF TESTING ON A MAC PORT 5000 MIGHT BE SPOKEN FOR BY AIR PLAY
