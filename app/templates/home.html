@@ -72,7 +72,7 @@ margin-right: 10px;"
               <a href="{{ url_for('main.get_artist', artist_id=artist.id) }}"
                 >Artist stats</a
               >
-              <a href="{{artist.href}}">Open in spotify</a>
+              <a href="{{artist.href}}" target="_blank">Open in spotify</a>
             </div>
           </div>
         </div>
@@ -106,12 +106,12 @@ margin-right: 10px;"
               <div>{{ track.name }}</div>
               <div>
                 By: {% for artist in track.artists %}
-                <a href="{{artist.external_urls.spotify}}">{{ artist.name }}</a>
+                <a href="{{artist.external_urls.spotify}}" target="_blank">{{ artist.name }}</a>
                 {% endfor %}
               </div>
               <div>Popularity: {{ track.popularity }}</div>
 
-              <a href="{{track.href}}">Open in spotify</a>
+              <a href="{{track.href}}" target="_blank">Open in spotify</a>
             </div>
           </div>
         </div>
