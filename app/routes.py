@@ -6,7 +6,6 @@ from flask import (
     url_for,
     session,
 )
-from pprint import pp
 from flask_login import login_required, login_user, logout_user, current_user
 from app.extensions import bp
 from app.auth_handler import AuthHandler
@@ -14,6 +13,7 @@ from spotipy import Spotify
 from spotipy import FlaskSessionCacheHandler
 from app.data_processing import list_to_csv, data_plot_to_base64
 from app.api_geo import get_weather_conditions
+from app.utils import validate_pwd
 
 auth_handler = AuthHandler()
 cache_handler = FlaskSessionCacheHandler(session)
@@ -48,7 +48,11 @@ def register():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        if auth_handler.register(username, password):
+        if not validate_pwd(password):
+            flash(
+                "Password must be at least 6 characters long, contain one upper-case letter and one number"
+            )
+        elif auth_handler.register(username, password):
             flash("Registration complete. You have been redirected to the login page")
             return redirect(url_for("main.login"))
         else:
@@ -175,7 +179,9 @@ def get_artist(artist_id: str):
     filename = f"{artist_id}_singles"
     list_to_csv(singles_data, filename=filename)
     data_plot = data_plot_to_base64(filename, x_col="release", y_col="popularity")
-    return render_template("artist.html", data_plot=data_plot, singles_data=singles_data)
+    return render_template(
+        "artist.html", data_plot=data_plot, singles_data=singles_data
+    )
 
 
 @bp.route("/playlists", methods=["GET", "POST"])
