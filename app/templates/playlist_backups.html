@@ -1,0 +1,29 @@
+<h1>Playlist backups</h1>
+
+<div style="width: 100%">
+  <ul style="list-style-type: none">
+    {% for playlist in playlists %}
+    <li>
+      <div
+        style="
+          display: flex;
+          border: 1px solid black;
+          height: 152px;
+          border-radius: 12px;
+          margin-bottom: 10px;
+        "
+      >
+        <div style="display: flex">
+          <div style="padding: 10px">
+            <div>title: {{ playlist.title }}</div>
+            <div>spotify id: {{ playlist.id }}</div>
+            <div>
+              <p>Tracks</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
