@@ -4,6 +4,7 @@ Search Spotify artists, tracks and playlists. Manage your own playlists, get a c
 ## Dependencies
 spotipy - handles auth and spotify api requests
 flask - webserver interface and session storage of token
+flask-wtf - include CSRF protection on forms
 pandas, numpy - handle managing and visualizing data
 pytest - for testing code
 pytest-cov - for testing code coverage
@@ -35,5 +36,6 @@ user can manipulate playlist
 app saves favorite artists
 app saves favorite tracks
 this cretes a ranking system among user to see the most popular artist, genres, tracks
+Backup and recreate playlist from database
 
 # IF TESTING ON A MAC PORT 5000 MIGHT BE SPOKEN FOR BY AIR PLAY
