@@ -3,6 +3,7 @@
 {% block content %}
 <h1>Register User</h1>
 <form action="{{ url_for('main.register') }}" method="post">
+    <input type="hidden" name="csrf_token" value = "{{ csrf_token() }}" />
     <label for="username">Enter username:</label>
     <input type="text" name="username" id="form-username" required>
     <label for="password">Enter password:</label>
