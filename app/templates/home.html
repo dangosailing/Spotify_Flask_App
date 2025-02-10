@@ -1,10 +1,7 @@
 {% extends "base.html" %} {% block content %}
 <h1>Welcome {{ user.username }}!</h1>
-<p>Current weather: {{ current_weather }}</p>
-<div>
-  <p>spotify id:{{ spotify_profile.id }}</p>
-  <p>followers: {{ spotify_profile.followers }}</p>
-  {% if spotify_profile.image_src | length > 0 %}
+<div style="display: flex; margin-bottom: 10px;">
+
   <div
     alt="user-profile-picture"
     style="background-image: url('{{ spotify_profile.image_src }}'); 
@@ -12,23 +9,38 @@ width: 125px;
 height: 125px;
 background-position: center center;
 background-repeat: no-repeat;
-border-radius:50%"
+border-radius:50%;
+margin-right: 10px;"
   ></div>
-<iframe
-  style="border-radius: 12px"
-  src="https://open.spotify.com/embed/track/{{ weather_track_id }}?utm_source=generator"
-  width="100%"
-  height="152"
-  frameborder="0"
-  allowfullscreen=""
-  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-  loading="lazy"
-></iframe>
-
+  <div>
+    <p>Current weather: {{ current_weather }}</p>
+    <p>spotify id:{{ spotify_profile.id }}</p>
+    <p>followers: {{ spotify_profile.followers }}</p>
+  </div>
+    {% if spotify_profile.image_src | length > 0 %}
+  </div>
+  <iframe
+    style="border-radius: 12px"
+    src="https://open.spotify.com/embed/track/{{ weather_track_id }}?utm_source=generator"
+    width="100%"
+    height="152"
+    frameborder="0"
+    allowfullscreen=""
+    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+    loading="lazy"
+  ></iframe>
   {% endif %}
 </div>
 <a href="{{ url_for('main.playlists') }}">Recent Playlists</a>
 <a href="{{ url_for('main.logout') }}">Logout</a>
+
+<div>
+  <form action="{{ url_for('main.search') }}" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    <input type="query" name="query" placeholder="Search tracks" required />
+    <button type="submit">Search</button>
+  </form>
+</div>
 
 <div style="display: flex; width: 100%">
   <div style="width: 100%">
@@ -42,6 +54,7 @@ border-radius:50%"
             border: 1px solid black;
             height: 152px;
             border-radius: 12px;
+            margin-bottom: 10px;
           "
         >
           <div style="display: flex">
@@ -78,6 +91,7 @@ border-radius:50%"
             border: 1px solid black;
             height: 152px;
             border-radius: 12px;
+            margin-bottom: 10px;
           "
         >
           <div style="display: flex">
@@ -90,8 +104,13 @@ border-radius:50%"
             />
             <div style="padding: 10px">
               <div>{{ track.name }}</div>
+              <div>
+                By: {% for artist in track.artists %}
+                <a href="{{artist.external_urls.spotify}}">{{ artist.name }}</a>
+                {% endfor %}
+              </div>
               <div>Popularity: {{ track.popularity }}</div>
-              
+
               <a href="{{track.href}}">Open in spotify</a>
             </div>
           </div>

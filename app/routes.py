@@ -89,7 +89,7 @@ def callback():
 @login_required
 def home():
     current_weather = get_weather_conditions()
-    weather_track = spotify.search(q=f"{current_weather}", limit=1)
+    weather_track = spotify.search(q=f"{current_weather}", limit=1, type="track")
     weather_track_id = weather_track["tracks"]["items"][0]["id"]
     user_profile = spotify.current_user()
     user_top_artists = spotify.current_user_top_artists()
@@ -140,6 +140,49 @@ def home():
     )
 
 
+@bp.route("/search", methods=["GET", "POST"])
+@login_required
+def search():
+    if request.method == "POST":
+        user_recent_playlists = spotify.current_user_playlists()
+        playlists = []
+        for playlist in user_recent_playlists["items"]:
+            playlists.append(
+                {
+                    "id": playlist["id"],
+                    "name": playlist["name"],
+                    "href": playlist["external_urls"]["spotify"],
+                }
+            )
+        track_data = []
+        query = request.form["query"]
+        session["search_query"] = query
+        if len(query) == 0:
+            flash("Query left empty")
+            return redirect(url_for("main.home"))
+        tracks = spotify.search(q=query, type="track")
+        for track in tracks["tracks"]["items"]:
+            track_data.append(
+                {
+                    "id": track["id"],
+                    "name": track["name"],
+                    "artists": track["artists"],
+                    "popularity": track["popularity"],
+                    "href": track["external_urls"]["spotify"],
+                    "image_src": track["album"]["images"][0]["url"],
+                }
+            )
+            session["query"] = query
+        return render_template(
+            "search_results.html",
+            results=track_data,
+            query=query,
+            user_playlists=playlists,
+        )
+    flash("No search query found. Try again")
+    return redirect(url_for("main.home"))
+
+
 @bp.route("/artists/<artist_id>", methods=["GET", "POST"])
 @login_required
 def get_artist(artist_id: str):
@@ -152,19 +195,9 @@ def get_artist(artist_id: str):
     for single in response_artist_singles["items"]:
         singles_ids.append(single["id"])
 
-    # GET ALBUM DATA
-    artist_albums = spotify.artist_albums(
-        artist_id=artist_id, include_groups="album", limit=20
-    )
-    album_ids = []
-    for album in artist_albums["items"]:
-        album_ids.append(album["id"])
-
-    response_albums_data = spotify.albums(album_ids)
     response_singles_data = spotify.albums(singles_ids)
 
     singles_data = []
-    albums_data = []
 
     for item in response_singles_data["albums"]:
         singles_data.append(
@@ -197,6 +230,7 @@ def playlists():
                 "href": playlist["external_urls"]["spotify"],
             }
         )
+
     return render_template("playlists.html", user=current_user, playlists=playlists)
 
 
@@ -207,10 +241,31 @@ def unfollow_playlist(playlist_id: str):
     return redirect(url_for("main.playlists"))
 
 
-@bp.route("/playlist/create/<playlist_id>", methods=["POST"])
+@bp.route("/playlist/add_track/<track_id>", methods=["POST", "GET"])
 @login_required
-def create_playlist():
-    pass
+def add_to_playlist(track_id: str):
+    if request.method == "POST":
+        playlist_id = request.form["playlist_id"]
+        spotify.playlist_add_items(playlist_id=playlist_id, items=[track_id])
+        flash("Item added to playlist!")
+        return redirect(url_for("main.playlist", playlist_id=playlist_id))
+    return redirect(url_for("main.home"))
+
+
+@bp.route("/playlist/remove_track/<track_id>", methods=["POST", "GET"])
+@login_required
+def remove_from_playlist(track_id: str):
+    if request.method == "POST":
+        playlist_id = request.form["playlist_id"]
+        playlist_position = request.form["playlist_position"]
+        spotify.user_playlist_remove_all_occurrences_of_tracks(
+            user=session.get("spotify_user_id"),
+            playlist_id=playlist_id,
+            tracks=[{"uri": track_id, "positions": [playlist_position]}],
+        )
+        flash("Item removed from playlist!")
+        return redirect(url_for("main.playlist", playlist_id=playlist_id))
+    return redirect(url_for("main.home"))
 
 
 @bp.route("/playlist/<playlist_id>", methods=["GET", "POST"])
@@ -234,6 +289,7 @@ def playlist(playlist_id: str):
                 "name": track["track"]["name"],
                 "popularity": track["track"]["popularity"],
                 "uri": track["track"]["uri"],
+                "artists": track["track"]["artists"],
             }
         )
     playlist_owner = playlist["owner"]["id"]

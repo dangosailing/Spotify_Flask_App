@@ -1,0 +1,64 @@
+{% extends "base.html" %} {% block content %}
+<h1>Search results</h1>
+<h4>Query: {{ query }}</h4>
+
+<div>
+  <form action="{{ url_for('main.search') }}" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    <input type="query" name="query" placeholder="Search tracks" required />
+    <button type="submit">Search</button>
+  </form>
+</div>
+<a href="{{ url_for('main.home') }}">Home</a>
+<a href="{{ url_for('main.logout') }}">Logout</a>
+
+<div style="width: 100%;">
+  <ul style="list-style-type: none">
+    {% for track in results %}
+    <li>
+      <div
+        style="
+          display: flex;
+          border: 1px solid black;
+          height: 152px;
+          border-radius: 12px;
+          margin-bottom: 10px;
+        "
+      >
+        <div style="display: flex">
+          <img
+            src="{{track.image_src}}"
+            alt="album-artwork"
+            width="152px"
+            height="152px"
+            style="border-radius: 10px"
+          />
+          <div style="padding: 10px">
+            <div>{{ track.name }}</div>
+            <div>
+              Artists: {% for artist in track.artists %}
+              <a href="{{artist.external_urls.spotify}}">{{ artist.name }}</a>
+              {% endfor %}
+            </div>
+            <div>Popularity: {{ track.popularity }}</div>
+
+            <a href="{{track.href}}">Open in spotify</a>
+          </div>
+        </div>
+        <div>
+          <form action="{{url_for('main.add_to_playlist', track_id=track.id)}}" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <select name="playlist_id">
+              {% for playlist in user_playlists %}
+              <option value="{{playlist.id}}">{{playlist.name}}</option>
+              {% endfor %}
+            </select>
+            <button type="submit">Add to playlist</button>
+          </form>
+        </div>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}
