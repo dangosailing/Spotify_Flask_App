@@ -282,10 +282,9 @@ def remove_from_playlist(track_id: str):
     if request.method == "POST":
         playlist_id = request.form["playlist_id"]
         playlist_position = request.form["playlist_position"]
-        spotify.user_playlist_remove_all_occurrences_of_tracks(
-            user=session.get("spotify_user_id"),
+        spotify.playlist_remove_all_occurrences_of_items(
             playlist_id=playlist_id,
-            tracks=[{"uri": track_id, "positions": [playlist_position]}],
+            items=[track_id],
         )
         flash("Item removed from playlist!")
         return redirect(url_for("main.playlist", playlist_id=playlist_id))
