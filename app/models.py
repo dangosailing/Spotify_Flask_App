@@ -15,13 +15,13 @@ user_playlist = db.Table(
 
 playlist_track = db.Table(
     "playlist_track",
-    db.Column("playlist_id", db.Integer, db.ForeignKey("playlist.spotify_id")),
+    db.Column("playlist_id", db.String(100), db.ForeignKey("playlist.spotify_id")),
     db.Column("track_id", db.String(100), db.ForeignKey("track.spotify_id")),
 )
 
 artist_track = db.Table(
     "artist_track",
-    db.Column("artist_id", db.Integer, db.ForeignKey("artist.spotify_id")),
+    db.Column("artist_id", db.String(100), db.ForeignKey("artist.spotify_id")),
     db.Column("track_id", db.String(100), db.ForeignKey("track.spotify_id")),
 )
 
