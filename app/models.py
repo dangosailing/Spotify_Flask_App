@@ -58,6 +58,7 @@ class Artist(db.Model):
 class Track(db.Model):
     spotify_id = db.Column(db.String(100), primary_key=True)
     title = db.Column(db.String(100), nullable=False)
+    uri = db.Column(db.String(150), nullable=False)
 
     def __repr__(self):
         return f"Track('{self.title}')"
