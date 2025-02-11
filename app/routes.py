@@ -283,13 +283,6 @@ def remove_from_playlist(track_id: str):
 @login_required
 def playlist(playlist_id: str):
     """Display playlist tracks"""
-    track_id = request.form["track_id"]
-    playlist_position = request.form["playlist_position"]
-    spotify.user_playlist_remove_all_occurrences_of_tracks(
-        user=session.get("spotify_user_id"),
-        playlist_id=playlist_id,
-        tracks=[{"uri": track_id, "positions": [playlist_position]}],
-    )
     playlist = spotify.playlist(playlist_id=playlist_id)
     playlists_tracks = []
     for track in playlist["tracks"]["items"]:
