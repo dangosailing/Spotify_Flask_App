@@ -14,7 +14,10 @@ from spotipy import FlaskSessionCacheHandler
 from app.data_processing import list_to_csv, data_plot_to_base64
 from app.api_geo import get_weather_conditions
 from app.utils import validate_pwd
+from app.api_handler import ApiHandler
 
+
+api_handler = ApiHandler()
 auth_handler = AuthHandler()
 cache_handler = FlaskSessionCacheHandler(session)
 spotify_auth_manager = auth_handler.spotify_auth_manager()
@@ -242,6 +245,7 @@ def playlists():
 @login_required
 def unfollow_playlist(playlist_id: str):
     spotify.current_user_unfollow_playlist(playlist_id)
+    flash("Playlist unfollowed")
     return redirect(url_for("main.playlists"))
 
 
@@ -312,11 +316,8 @@ def playlist(playlist_id: str):
 @bp.route("/playlist/save/<playlist_id>", methods=["GET", "POST"])
 @login_required
 def save_playlist(playlist_id: str):
-    from app.api_handler import ApiHandler
-
-    api_handler = ApiHandler()
     playlist = spotify.playlist(playlist_id=playlist_id)
-    api_handler.create_playlist(playlist=playlist, current_user=current_user)
+    api_handler.backup_playlist(playlist=playlist, current_user=current_user)
     flash("Playlist saved to database")
     return redirect(url_for("main.playlist", playlist_id=playlist_id))
 
@@ -324,8 +325,19 @@ def save_playlist(playlist_id: str):
 @bp.route("/playlist/backups", methods=["GET", "POST"])
 @login_required
 def get_playlist_backups():
-    from app.api_handler import ApiHandler
-    api_handler = ApiHandler()
     playlist_backups = api_handler.get_playlist_backups(current_user=current_user)
-    flash(playlist_backups)
     return render_template("playlist_backups.html", playlists=playlist_backups)
+
+
+@bp.route("/playlist/restore/<playlist_id>", methods=["POST", "GET"])
+@login_required
+def restore_playlist(playlist_id: str):
+    playlist_data = api_handler.get_backup_data(playlist_id)
+    spotify_user_id = session.get("spotify_user_id")
+    playlist_title = playlist_data["title"]
+    response = spotify.user_playlist_create(user=spotify_user_id, name=playlist_title)
+    new_playlist_id = response["id"]
+    spotify.playlist_add_items(
+        playlist_id=new_playlist_id, items=playlist_data["track_uris"]
+    )
+    return redirect(url_for("main.playlists"))

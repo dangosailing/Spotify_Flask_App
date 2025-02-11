@@ -1,35 +1,104 @@
-from app.models import User, Playlist
+from app.models import User, Playlist, Artist, Track
 from app.extensions import db
 from flask_login import current_user
 from flask import flash
 
+
 class ApiHandler:
-    def create_playlist(self, playlist:dict, current_user = current_user) -> None:
+    def create_playlist(self, playlist: dict, current_user: dict) -> None:
         user = User.query.filter_by(id=current_user.id).first()
         if user:
             if not Playlist.query.filter_by(spotify_id=playlist["id"]).first():
-                new_playlist = Playlist(spotify_id=playlist["id"], title=playlist["name"])
+                new_playlist = Playlist(
+                    spotify_id=playlist["id"], title=playlist["name"]
+                )
                 db.session.add(new_playlist)
                 user.following.append(new_playlist)
                 db.session.commit()
             else:
-                flash("PLAYLIST ALREADY EXISTS")
+                flash("Playlist already saved")
         else:
-            flash("USER NOT FOUND")
-    
-    def get_playlist_backups(self, current_user = current_user) -> list[dict]:
-        """ Return user playlists saved to database """
+            flash("User not found")
+
+    def save_tracks_and_artist(self, tracks: list) -> None:
+        """Save tracks and their artists to database and connect them"""
+        for track in tracks:
+            new_track = Track(
+                spotify_id=track["id"], title=track["title"], uri=track["uri"]
+            )
+            if not Track.query.filter_by(spotify_id=track["id"]).first():
+                db.session.add(new_track)
+                db.session.commit()
+                for artist in track["artists"]:
+                    if not Artist.query.filter_by(spotify_id=artist["id"]).first():
+                        new_artist = Artist(
+                            spotify_id=artist["id"],
+                            name=artist["name"] if artist["name"] else artist["type"],
+                        )
+                        db.session.add(new_artist)
+                        new_artist.features.append(new_track)
+                        db.session.commit()
+                    else:
+                        existing_artist = Artist.query.filter_by(
+                            spotify_id=artist["id"]
+                        ).first()
+                        existing_artist.features.append(new_track)
+
+    def connect_tracks_playlist(self, tracks: list, playlist_id: str) -> None:
+        """Save tracks in playlist and connect it to the playlist"""
+        playlist = Playlist.query.filter_by(spotify_id=playlist_id).first()
+        for track in tracks:
+            new_track = Track.query.filter_by(spotify_id=track["id"]).first()
+            playlist.tracks.append(new_track)
+            db.session.commit()
+
+    def get_playlist_backups(self, current_user=current_user) -> list[dict]:
+        """Return user playlists saved to database"""
         user = User.query.filter_by(id=current_user.id).first()
         playlist_backups = []
         if user:
             user_playlists = user.following
             for playlist in user_playlists:
                 playlist_backups.append(
-                    {"id": playlist.spotify_id,
-                    "title": playlist.title}
+                    {
+                        "id": playlist.spotify_id,
+                        "title": playlist.title,
+                        "tracks": playlist.tracks,
+                    },
                 )
-                
             return playlist_backups
         else:
             return None
 
+    def get_backup_data(self, playlist_id: str) -> dict:
+        """Returns the track uri data and playlist title required to populate playlist with tracks"""
+        playlist = Playlist.query.filter_by(spotify_id=playlist_id).first()
+        playlist_track_uri_list = []
+        if playlist:
+            tracks = playlist.tracks
+            for track in tracks:
+                playlist_track_uri_list.append(track.uri)
+            return {"track_uris": playlist_track_uri_list, "title": playlist.title}
+        else:
+            return None
+
+    def backup_playlist(
+        self, playlist: dict, current_user: dict = current_user
+    ) -> None:
+        playlist_id = playlist["id"]
+        self.create_playlist(playlist, current_user)
+        playlist_tracks = []
+        for track in playlist["tracks"]["items"]:
+            playlist_tracks.append(
+                {
+                    "title": track["track"]["name"],
+                    "artists": track["track"]["artists"],
+                    "id": track["track"]["id"],
+                    "uri": track["track"][
+                        "uri"
+                    ],  # Add items to playlist does not rely on track ids but rather the URI, hence why it´s included here
+                }
+            )
+        self.save_tracks_and_artist(playlist_tracks)
+        self.connect_tracks_playlist(playlist_tracks, playlist_id)
+        return playlist_tracks
