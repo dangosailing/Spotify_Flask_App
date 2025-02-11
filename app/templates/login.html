@@ -1,7 +1,9 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %}
+
+{% block content %}
 <h1>Login</h1>
-<a href="{{ url_for('main.register') }}">Register</a>
-<div style="margin-top: 10px">
+<a class="register-link" href="{{ url_for('main.register') }}">Register</a>
+<div class="form-container">
   <form action="{{ url_for('main.login') }}" method="post">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
     <label for="username">Enter username:</label>
@@ -11,5 +13,4 @@
     <button type="submit">Login</button>
   </form>
 </div>
-
 {% endblock %}

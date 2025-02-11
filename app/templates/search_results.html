@@ -1,4 +1,6 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %}
+
+{% block content %}
 <h1>Search results</h1>
 <h4>Query: {{ query }}</h4>
 
@@ -9,31 +11,21 @@
     <button type="submit">Search</button>
   </form>
 </div>
-<a href="{{ url_for('main.home') }}">Home</a>
-<a href="{{ url_for('main.logout') }}">Logout</a>
+<a class="home-link" href="{{ url_for('main.home') }}">Home</a>
+<a class="logout-link" href="{{ url_for('main.logout') }}">Logout</a>
 
-<div style="width: 100%;">
-  <ul style="list-style-type: none">
+<div class="results-container">
+  <ul class="results-list">
     {% for track in results %}
     <li>
-      <div
-        style="
-          display: flex;
-          border: 1px solid black;
-          height: 152px;
-          border-radius: 12px;
-          margin-bottom: 10px;
-        "
-      >
-        <div style="display: flex">
+      <div class="result-item">
+        <div class="result-item-content">
           <img
             src="{{track.image_src}}"
             alt="album-artwork"
-            width="152px"
-            height="152px"
-            style="border-radius: 10px"
+            class="result-item-image"
           />
-          <div style="padding: 10px">
+          <div class="result-item-info">
             <div>{{ track.name }}</div>
             <div>
               Artists: {% for artist in track.artists %}
@@ -41,7 +33,6 @@
               {% endfor %}
             </div>
             <div>Popularity: {{ track.popularity }}</div>
-
             <a href="{{track.href}}" target="_blank">Open in spotify</a>
           </div>
         </div>

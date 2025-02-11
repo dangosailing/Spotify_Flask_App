@@ -1,42 +1,41 @@
-{% extends "base.html" %} {% block content %}
-<h1>{{playlist_name}}</h1>
-<h2>Owner: {{ playlist_owner}}</h2>
+{% extends "base.html" %}
 
-<a href="{{ url_for('main.logout') }}">Logout</a>
-<a href="{{ url_for('main.playlists') }}">Back</a>
-<a style="color: red" href="{{ url_for('main.unfollow_playlist', playlist_id=playlist_id) }}">Unfollow Playlist</a>
-<a style="color: green" href="{{ url_for('main.save_playlist', playlist_id=playlist_id) }}">Save Playlist to database</a>
+{% block content %}
+<h1>{{ playlist_name }}</h1>
+<h2>Owner: {{ playlist_owner }}</h2>
 
-<div style="display: flex; width: 100%">
-  <div style="width: 100%">
-      <ul>
-        {% for track in tracks %}
-        <li>
-          <div style="display: flex; margin-bottom: 10px; width: 100%">
-            <div style="width:70%">
-            {{loop.index}} - <b>{{track.name}}</b> -
+<a class="logout-link" href="{{ url_for('main.logout') }}">Logout</a>
+<a class="back-link" href="{{ url_for('main.playlists') }}">Back</a>
+<a class="unfollow-link" href="{{ url_for('main.unfollow_playlist', playlist_id=playlist_id) }}">Unfollow Playlist</a>
+<a class="save-link" href="{{ url_for('main.save_playlist', playlist_id=playlist_id) }}">Save Playlist to database</a>
+
+<div class="flex-container">
+  <div class="flex-item-full">
+    <ul>
+      {% for track in tracks %}
+      <li>
+        <div class="track-item">
+          <div class="track-info">
+            {{ loop.index }} - <b>{{ track.name }}</b> -
             {% for artist in track.artists %}
-            {{ artist.name }} 
-            {% endfor %} 
+            {{ artist.name }}
+            {% endfor %}
             {% if playlist_owner == spotify_user_id %}
-            </div>
-            <div style="margin-left: 10px">
-
-              <form action="{{ url_for('main.remove_from_playlist', track_id=track.id) }}" method="post">
-                <input type="hidden" name="csrf_token" value = "{{ csrf_token() }}" />
-                <input type="hidden" name="playlist_id" value="{{ playlist_id}}">
-                <input type="hidden" name="playlist_position" value="{{ loop.index }}">
-                <input type="hidden" name="track_uri" value="{{ track.uri}}">
-                <button type="submit">Remove track from playlist</button>
-              </form>
-            </div>
-            {% endif %}
           </div>
-        </li>
-        {% endfor %}
-      </form>
+          <div class="track-actions">
+            <form action="{{ url_for('main.remove_from_playlist', track_id=track.id) }}" method="post">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+              <input type="hidden" name="playlist_id" value="{{ playlist_id }}" />
+              <input type="hidden" name="playlist_position" value="{{ loop.index }}" />
+              <input type="hidden" name="track_uri" value="{{ track.uri }}" />
+              <button type="submit">Remove track from playlist</button>
+            </form>
+          </div>
+          {% endif %}
+        </div>
+      </li>
+      {% endfor %}
     </ul>
   </div>
 </div>
-
 {% endblock %}

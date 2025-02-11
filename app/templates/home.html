@@ -1,35 +1,29 @@
-{% extends "base.html" %} {% block content %}
-<h1>Welcome {{ user.username }}!</h1>
-<div style="display: flex; margin-bottom: 10px;">
+{% extends "base.html" %}
 
+{% block content %}
+<h1>Welcome {{ user.username }}!</h1>
+<div class="profile-container">
   <div
+    class="profile-picture"
     alt="user-profile-picture"
-    style="background-image: url('{{ spotify_profile.image_src }}'); 
-width: 125px;
-height: 125px;
-background-position: center center;
-background-repeat: no-repeat;
-border-radius:50%;
-margin-right: 10px;"
+    style="background-image: url('{{ spotify_profile.image_src }}');"
   ></div>
   <div>
     <p>Current weather: {{ current_weather }}</p>
     <p>spotify id:{{ spotify_profile.id }}</p>
     <p>followers: {{ spotify_profile.followers }}</p>
   </div>
-    {% if spotify_profile.image_src | length > 0 %}
-  </div>
-  <iframe
-    style="border-radius: 12px"
-    src="https://open.spotify.com/embed/track/{{ weather_track_id }}?utm_source=generator"
-    width="100%"
-    height="152"
-    frameborder="0"
-    allowfullscreen=""
-    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-    loading="lazy"
-  ></iframe>
-  {% endif %}
+  {% if spotify_profile.image_src | length > 0 %}
+</div>
+<iframe
+  class="spotify-embed"
+  src="https://open.spotify.com/embed/track/{{ weather_track_id }}?utm_source=generator"
+  frameborder="0"
+  allowfullscreen=""
+  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+  loading="lazy"
+></iframe>
+{% endif %}
 </div>
 <a href="{{ url_for('main.playlists') }}">Recent Playlists</a>
 <a href="{{ url_for('main.logout') }}">Logout</a>
@@ -42,36 +36,24 @@ margin-right: 10px;"
   </form>
 </div>
 
-<div style="display: flex; width: 100%">
-  <div style="width: 100%">
-    <ul style="list-style-type: none">
+<div class="top-items-container">
+  <div class="top-artists">
+    <ul class="top-list">
       <h2>Your top artists</h2>
       {% for artist in top_artists %}
       <li>
-        <div
-          style="
-            display: flex;
-            border: 1px solid black;
-            height: 152px;
-            border-radius: 12px;
-            margin-bottom: 10px;
-          "
-        >
-          <div style="display: flex">
+        <div class="top-item">
+          <div class="top-item-content">
             <img
               src="{{ artist.image_src }}"
               alt="artist-profile-picture"
-              width="152px"
-              height="152px"
-              style="border-radius: 10px"
+              class="top-item-image"
             />
-            <div style="padding: 10px">
+            <div class="top-item-info">
               <div>{{ artist.name }}</div>
               <div>Genres: {{artist.genres}}</div>
               <div>Followers: {{ artist.followers }}</div>
-              <a href="{{ url_for('main.get_artist', artist_id=artist.id) }}"
-                >Artist stats</a
-              >
+              <a href="{{ url_for('main.get_artist', artist_id=artist.id) }}">Artist stats</a>
               <a href="{{artist.href}}" target="_blank">Open in spotify</a>
             </div>
           </div>
@@ -80,29 +62,19 @@ margin-right: 10px;"
       {% endfor %}
     </ul>
   </div>
-  <div style="width: 100%">
-    <ul style="list-style-type: none">
+  <div class="top-tracks">
+    <ul class="top-list">
       <h2>Your top tracks</h2>
       {% for track in top_tracks %}
       <li>
-        <div
-          style="
-            display: flex;
-            border: 1px solid black;
-            height: 152px;
-            border-radius: 12px;
-            margin-bottom: 10px;
-          "
-        >
-          <div style="display: flex">
+        <div class="top-item">
+          <div class="top-item-content">
             <img
               src="{{track.image_src}}"
               alt="album-artwork"
-              width="152px"
-              height="152px"
-              style="border-radius: 10px"
+              class="top-item-image"
             />
-            <div style="padding: 10px">
+            <div class="top-item-info">
               <div>{{ track.name }}</div>
               <div>
                 By: {% for artist in track.artists %}
@@ -110,7 +82,6 @@ margin-right: 10px;"
                 {% endfor %}
               </div>
               <div>Popularity: {{ track.popularity }}</div>
-
               <a href="{{track.href}}" target="_blank">Open in spotify</a>
             </div>
           </div>

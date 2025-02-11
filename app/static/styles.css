@@ -14,3 +14,200 @@ th {
 tr:nth-child(even) {
   background-color: #dddddd;
 }
+
+.flex-container {
+  display: flex;
+  width: 100%;
+}
+
+.flex-item {
+  border: 1px solid black;
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
+.flex-item:last-child {
+  margin-right: 0;
+}
+
+.flex-item-full {
+  width: 100%;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 5px;
+}
+
+input {
+  margin-bottom: 10px;
+  padding: 5px;
+  font-size: 16px;
+}
+
+button {
+  padding: 5px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.unfollow-link {
+  color: red;
+}
+
+.save-link {
+  color: green;
+}
+
+.logout-link,
+.back-link,
+.playlist-backups-link,
+.login-link,
+.register-link,
+.home-link {
+  margin-right: 10px;
+}
+
+.track-item {
+  display: flex;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.track-info {
+  width: 70%;
+}
+
+.track-actions {
+  margin-left: 10px;
+}
+
+.playlist-container {
+  width: 100%;
+}
+
+.playlist-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.playlist-item {
+  display: flex;
+  border: 1px solid black;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.playlist-item-content {
+  display: flex;
+}
+
+.playlist-image {
+  width: 152px;
+  height: 152px;
+  border-radius: 10px;
+}
+
+.playlist-info {
+  padding: 10px;
+}
+
+.flash-messages {
+  border: 1px solid black;
+  margin-top: 10px;
+}
+
+.spotify-logo {
+  width: 50px;
+}
+
+.profile-container {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.profile-picture {
+  width: 125px;
+  height: 125px;
+  background-position: center center;
+  background-repeat: no-repeat;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.spotify-embed {
+  border-radius: 12px;
+  width: 100%;
+  height: 152px;
+}
+
+.top-items-container {
+  display: flex;
+  width: 100%;
+}
+
+.top-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.top-item {
+  display: flex;
+  border: 1px solid black;
+  height: 152px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.top-item-content {
+  display: flex;
+}
+
+.top-item-image {
+  width: 152px;
+  height: 152px;
+  border-radius: 10px;
+}
+
+.top-item-info {
+  padding: 10px;
+}
+
+.form-container {
+  margin-top: 10px;
+}
+
+.results-container {
+  width: 100%;
+}
+
+.results-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.result-item {
+  display: flex;
+  border: 1px solid black;
+  height: 152px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.result-item-content {
+  display: flex;
+}
+
+.result-item-image {
+  width: 152px;
+  height: 152px;
+  border-radius: 10px;
+}
+
+.result-item-info {
+  padding: 10px;
+}

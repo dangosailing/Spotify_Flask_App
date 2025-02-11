@@ -11,20 +11,25 @@
     {% block head_includes %} {% endblock %}
   </head>
   <body>
-    <a href="https://developer.spotify.com/"
-      ><img
+    <a href="https://developer.spotify.com/">
+      <img
         src="https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Black-300x300.png"
         width="50px"
         alt="spotify_profile_black"
-    /></a>
-    {% with messages = get_flashed_messages() %} {% if messages %}
-    <div style="border: 1px solid black; margin-top: 10px">
-      <ul>
-        {% for message in messages %}
-        <li>{{ message }}</li>
-        {% endfor %}
-      </ul>
-    </div>
-    {% endif %} {% endwith %} {% block content %}{% endblock %}
+        class="spotify-logo"
+      />
+    </a>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash-messages">
+          <ul>
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
   </body>
 </html>

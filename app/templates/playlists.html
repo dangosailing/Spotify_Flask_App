@@ -1,37 +1,23 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %}
+
+{% block content %}
 <h1>Your recent playlists</h1>
 
-<a href="{{ url_for('main.logout') }}">Logout</a>
-<a href="{{ url_for('main.home') }}">Back</a>
-<a href="{{ url_for('main.get_playlist_backups') }}">Playlist backups</a>
+<a class="logout-link" href="{{ url_for('main.logout') }}">Logout</a>
+<a class="back-link" href="{{ url_for('main.home') }}">Back</a>
+<a class="playlist-backups-link" href="{{ url_for('main.get_playlist_backups') }}">Playlist backups</a>
 
-<div style="width: 100%">
-  <ul style="list-style-type: none">
+<div class="playlist-container">
+  <ul class="playlist-list">
     {% for playlist in playlists %}
     <li>
-      <div
-        style="
-          display: flex;
-          border: 1px solid black;
-          height: 152px;
-          border-radius: 12px;
-          margin-bottom: 10px;
-        "
-      >
-        <div style="display: flex">
-          <img
-            src="{{playlist.image_src}}"
-            alt="album-artwork"
-            width="152px"
-            height="152px"
-            style="border-radius: 10px"
-          />
-          <div style="padding: 10px">
+      <div class="playlist-item">
+        <div class="playlist-item-content">
+          <img src="{{playlist.image_src}}" alt="album-artwork" class="playlist-image" />
+          <div class="playlist-info">
             <div>{{ playlist.name }}</div>
-            <a href="{{playlist.href}}" target="_blank">Open in spotify</a>
-            <a href="{{ url_for('main.playlist', playlist_id=playlist.id) }}"
-              >View playlist</a
-            >
+            <a href="{{playlist.href}}" target="_blank">Open in Spotify</a>
+            <a href="{{ url_for('main.playlist', playlist_id=playlist.id) }}">View playlist</a>
           </div>
         </div>
       </div>
@@ -39,5 +25,4 @@
     {% endfor %}
   </ul>
 </div>
-
 {% endblock %}

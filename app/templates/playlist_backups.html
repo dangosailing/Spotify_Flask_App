@@ -1,36 +1,26 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %}
+
+{% block content %}
 <h1>Playlist backups</h1>
 
-<a href="{{ url_for('main.logout') }}">Logout</a>
-<a href="{{ url_for('main.playlists') }}">Back</a>
-<div style="width: 100%">
-  <ul style="list-style-type: none">
+<a class="logout-link" href="{{ url_for('main.logout') }}">Logout</a>
+<a class="back-link" href="{{ url_for('main.playlists') }}">Back</a>
+<div class="playlist-container">
+  <ul class="playlist-list">
     {% for playlist in playlists %}
     <li>
-      <div
-        style="
-          display: flex;
-          border: 1px solid black;
-          border-radius: 12px;
-          margin-bottom: 10px;
-        "
-      >
-        <div style="display: flex">
-          <div style="padding: 10px">
+      <div class="playlist-item">
+        <div class="playlist-item-content">
+          <div class="playlist-info">
             <div>title: {{ playlist.title }}</div>
             <div>spotify id: {{ playlist.id }}</div>
-            <a
-              style="color: green"
-              href="{{ url_for('main.restore_playlist', playlist_id=playlist.id ) }}"
-              >Restore Playlist</a
-            >
+            <a class="restore-link" href="{{ url_for('main.restore_playlist', playlist_id=playlist.id ) }}">Restore Playlist</a>
             <div>
               <p>Tracks:</p>
               <ul>
                 {% for track in playlist.tracks %}
                 <li>
-                  <b>{{track.title}}</b>{% for artist in track.features %} -
-                  {{artist.name}} {% endfor %}
+                  <b>{{track.title}}</b>{% for artist in track.features %} - {{artist.name}} {% endfor %}
                 </li>
                 {% endfor %}
               </ul>
@@ -42,5 +32,4 @@
     {% endfor %}
   </ul>
 </div>
-
 {% endblock %}
