@@ -12,9 +12,9 @@
       <ul>
         {% for track in tracks %}
         <li>
-          <div style="display: flex; margin-bottom: 10px;">
-            <div style="width:20%">
-            {{loop.index}} - {{track.name}} -
+          <div style="display: flex; margin-bottom: 10px; width: 100%">
+            <div style="width:70%">
+            {{loop.index}} - <b>{{track.name}}</b> -
             {% for artist in track.artists %}
             {{ artist.name }} 
             {% endfor %} 
