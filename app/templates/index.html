@@ -1,7 +1,36 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 <h1>Welcome to the spotifun app!</h1>
-<a class="login-link" href="{{ url_for('main.login') }}">Login</a>
-<a class="register-link" href="{{ url_for('main.register') }}">Register</a>
+<div class="about-container">
+  <p>
+    An app to help manage your playlists and get an overview of your spotify
+    profile, favorite artists and favorite tracks:
+  </p>
+  <ul>
+    <li>Search and add tracks to recent playlists</li>
+    <li>Unfollow playlists</li>
+    <li>Remove specific tracks from playlists</li>
+    <li>
+      Create backups of your favorite playlists that are stored in
+      the database that can be used to restore them even if you unfollow them
+      from spotify and loose track of them!
+    </li>
+    <li>
+      View data for artist popularity via the "artists stats" for
+      your top artists to see how their latest singles measure up using the
+      spotifys own popularity (0-100) ranking
+    </li>
+  </ul>
+
+  <p></p>
+  When run, the app uses your local IP address to approximate your location and
+  feed you the current weather. This is also used to generate a track suggestion
+  to fit the weather in the embeded spotify player on your home-page!
+
+  <p>
+    The app uses the spotify oauth flow to guarantee that you are aware of what
+    data the app has access to when you´re using it No sensitive data is stored
+    in the database and no information is used to corellate your spotify profile
+    with personal information
+  </p>
+</div>
 {% endblock %}

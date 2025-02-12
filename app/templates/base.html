@@ -4,9 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Spotify App</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&display=swap"
+      rel="stylesheet"
+    />
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='styles.css') }}"
@@ -14,25 +17,58 @@
     {% block head_includes %} {% endblock %}
   </head>
   <body>
-    <a href="https://developer.spotify.com/">
-      <img
-        src="https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Black-300x300.png"
-        width="50px"
-        alt="spotify_profile_black"
-        class="spotify-logo"
-      />
-    </a>
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <div class="flash-messages">
-          <ul>
-            {% for message in messages %}
-              <li>{{ message }}</li>
-            {% endfor %}
-          </ul>
+    <div class="nav-menu">
+      <div class="nav-item-logo">
+        <a href="https://developer.spotify.com/">
+          <img
+            src="https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green.png"
+            width="50px"
+            alt="Spotify_Primary_Logo_RGB_Green"
+            class="spotify-logo"
+          />
+        </a>
+      </div>
+      {% if not current_user.is_authenticated %}
+      <div class="nav-item-links">
+        <div class="nav-item">
+          <a href="{{ url_for('main.register') }}">Register</a>
         </div>
+        <div class="nav-item">
+          <a href="{{ url_for('main.login') }}">Login</a>
+        </div>
+      </div>
       {% endif %}
-    {% endwith %}
-    {% block content %}{% endblock %}
+      {% if current_user.is_authenticated %}
+      <div class="nav-item-links">
+        <div class="nav-item">
+          <a href="{{ url_for('main.home') }}">Home</a>
+        </div>
+        <div class="nav-item">
+          <a href="{{ url_for('main.playlists') }}">Playlists</a>
+        </div>
+        <div class="nav-item">
+          <a href="{{ url_for('main.get_playlist_backups') }}">Playlist backups</a>
+        </div>
+        <div class="nav-item">
+          <a href="{{ url_for('main.logout') }}">Logout</a>
+        </div>
+      </div>
+
+      <form action="{{ url_for('main.search') }}" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <input type="query" name="query" placeholder="Search tracks" required />
+        <button type="submit">Search</button>
+      </form>
+      {% endif %}
+    </div>
+    {% with messages = get_flashed_messages() %} {% if messages %}
+    <div class="flash-messages">
+      <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %} {% endwith %} {% block content %}{% endblock %}
   </body>
 </html>

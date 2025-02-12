@@ -4,8 +4,6 @@
 <h1>{{ playlist_name }}</h1>
 <h2>Owner: {{ playlist_owner }}</h2>
 
-<a class="logout-link" href="{{ url_for('main.logout') }}">Logout</a>
-<a class="back-link" href="{{ url_for('main.playlists') }}">Back</a>
 <a class="unfollow-link" href="{{ url_for('main.unfollow_playlist', playlist_id=playlist_id) }}">Unfollow Playlist</a>
 <a class="save-link" href="{{ url_for('main.save_playlist', playlist_id=playlist_id) }}">Save Playlist to database</a>
 

@@ -1,5 +1,43 @@
 body {
-    font-family: "Atkinson Hyperlegible Next", serif;
+  font-family: "Atkinson Hyperlegible Next", serif;
+  font-size: 1.2em;
+}
+
+.about-container {
+  display:block;
+  
+}
+
+.nav-menu {
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  background: black;
+  display: flex;
+
+  .nav-item-logo {
+    display: flex;
+  }
+
+  .nav-item-links {
+    display: flex;
+    flex-grow: 1;
+    padding: 10px;
+    .nav-item {
+      margin: 10px;
+      a {
+        color: white;
+        text-decoration: none;
+        
+      }
+      a:hover {
+        color: green;
+      }
+    }
+    .nav-search {
+      flex-grow: 1;
+    }
+  }
 }
 
 table {
@@ -67,15 +105,6 @@ button {
   color: green;
 }
 
-.logout-link,
-.back-link,
-.playlist-backups-link,
-.login-link,
-.register-link,
-.home-link {
-  margin-right: 10px;
-}
-
 .track-item {
   display: flex;
   margin-bottom: 10px;
@@ -83,7 +112,7 @@ button {
 }
 
 .track-info {
-  width: 70%;
+  width:50%
 }
 
 .track-actions {
@@ -183,6 +212,7 @@ button {
 
 .form-container {
   margin-top: 10px;
+  display: flex
 }
 
 .results-container {
