@@ -6,6 +6,7 @@ from flask import flash
 
 class ApiHandler:
     def create_playlist(self, playlist: dict, current_user: dict) -> None:
+        """Creates playlist and appends it to the current user"""
         user = User.query.filter_by(id=current_user.id).first()
         if user:
             if not Playlist.query.filter_by(spotify_id=playlist["id"]).first():
@@ -85,6 +86,7 @@ class ApiHandler:
     def backup_playlist(
         self, playlist: dict, current_user: dict = current_user
     ) -> None:
+        """Saves a backup of the playlist together with the featured tracks and artists"""
         playlist_id = playlist["id"]
         self.create_playlist(playlist, current_user)
         playlist_tracks = []
