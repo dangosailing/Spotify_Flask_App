@@ -84,17 +84,20 @@ def logout():
 
 # ----------------- Spotify Routes -----------------
 @bp.route("/callback")
-@login_required
 def callback():
     """Callback for the Spotify API requests. Gets access token to store in session, redirects to home if it works, login if failed"""
-    token_info = spotify_auth_manager.get_access_token(request.args["code"])
-    session["token_info"] = token_info
-    if token_info:
+    try: 
+        token_info = spotify_auth_manager.get_access_token(request.args["code"])
         session["token_info"] = token_info
-        flash("Authorization succeeded.")
-        return redirect(url_for("main.home"))
-    else:
-        flash("Authorization failed. Please try again.")
+        if token_info:
+            session["token_info"] = token_info
+            flash("Authorization succeeded.")
+            return redirect(url_for("main.home"))
+        else:
+            flash("Authorization failed. Please try again.")
+            return redirect(url_for("main.login"))
+    except:
+        flash("Spotify session token not available")
         return redirect(url_for("main.login"))
 
 
