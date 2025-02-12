@@ -27,6 +27,9 @@ spotify = Spotify(auth_manager=spotify_auth_manager)
 # ----------------- Main App Routes -----------------
 @bp.route("/")
 def index():
+    """ 
+    Returns the index template
+    """
     return render_template("index.html")
 
 
@@ -74,7 +77,9 @@ def register():
 
 @bp.route("/logout")
 def logout():
-    """Logout user, clear session data and redirect to index"""
+    """
+    Logout user, clear session data and redirect to index
+    """
     logout_user()
     session.clear()
 
@@ -85,7 +90,9 @@ def logout():
 # ----------------- Spotify Routes -----------------
 @bp.route("/callback")
 def callback():
-    """Callback for the Spotify API requests. Gets access token to store in session, redirects to home if it works, login if failed"""
+    """
+    Callback for the Spotify API requests. Gets access token to store in session, redirects to home if it works, login if failed
+    """
     try: 
         token_info = spotify_auth_manager.get_access_token(request.args["code"])
         session["token_info"] = token_info
@@ -101,10 +108,12 @@ def callback():
         return redirect(url_for("main.login"))
 
 
-@bp.route("/home", methods=["GET", "POST"])
+@bp.route("/home")
 @login_required
 def home():
-    """Get home profile for user with recent top artists and tracks. Fetch current weather conditions and display a related track in the embedded player."""
+    """
+    Get home profile for user with recent top artists and tracks. Fetch current weather conditions and display a related track in the embedded player.
+    """
     current_weather = api_weather_handler.get_weather_conditions()
     weather_track = spotify.search(q=f"{current_weather}", limit=1, type="track")
     weather_track_id = weather_track["tracks"]["items"][0]["id"]
@@ -205,10 +214,12 @@ def search():
     return redirect(url_for("main.home"))
 
 
-@bp.route("/artists/<artist_id>", methods=["GET", "POST"])
+@bp.route("/artists/<artist_id>")
 @login_required
 def get_artist(artist_id: str):
-    """Fetch artist's singles and display them along with a data plot mapping popularity of single releases over time"""
+    """
+    Fetch artist's singles and display them along with a data plot mapping popularity of single releases over time
+    """
     response_artist_singles = spotify.artist_albums(
         artist_id=artist_id, include_groups="single", limit=20
     )
@@ -235,10 +246,12 @@ def get_artist(artist_id: str):
     )
 
 
-@bp.route("/playlists", methods=["GET", "POST"])
+@bp.route("/playlists")
 @login_required
 def playlists():
-    """Get all recent playlists for current user"""
+    """
+    Get all recent playlists for current user
+    """
     user_recent_playlists = spotify.current_user_playlists()
     playlists = []
     for playlist in user_recent_playlists["items"]:
@@ -257,10 +270,12 @@ def playlists():
     return render_template("playlists.html", user=current_user, playlists=playlists)
 
 
-@bp.route("/playlist/unfollow/<playlist_id>", methods=["POST", "GET"])
+@bp.route("/playlist/unfollow/<playlist_id>")
 @login_required
 def unfollow_playlist(playlist_id: str):
-    """Unfollow/Remove playlist and redirect to the playlists page"""
+    """
+    Unfollow/Remove playlist and redirect to the playlists page
+    """
     spotify.current_user_unfollow_playlist(playlist_id)
     flash("Playlist unfollowed")
     return redirect(url_for("main.playlists"))
@@ -269,7 +284,9 @@ def unfollow_playlist(playlist_id: str):
 @bp.route("/playlist/add_track/<track_id>", methods=["POST", "GET"])
 @login_required
 def add_to_playlist(track_id: str):
-    """POST:Add track to playlist and redirect to playlist page after adding track"""
+    """
+    POST:Add track to playlist and redirect to playlist page after adding track
+    """
     if request.method == "POST":
         playlist_id = request.form["playlist_id"]
         spotify.playlist_add_items(playlist_id=playlist_id, items=[track_id])
@@ -278,13 +295,14 @@ def add_to_playlist(track_id: str):
     return redirect(url_for("main.home"))
 
 
-@bp.route("/playlist/remove_track/<track_id>", methods=["POST", "GET"])
+@bp.route("/playlist/remove_track/<track_id>", methods=["POST"])
 @login_required
 def remove_from_playlist(track_id: str):
-    """POST:Remove a track from a playlist  and redirect to playlist page after removing track"""
+    """
+    POST:Remove a track from a playlist  and redirect to playlist page after removing track
+    """
     if request.method == "POST":
         playlist_id = request.form["playlist_id"]
-        playlist_position = request.form["playlist_position"]
         spotify.playlist_remove_all_occurrences_of_items(
             playlist_id=playlist_id,
             items=[track_id],
@@ -294,10 +312,12 @@ def remove_from_playlist(track_id: str):
     return redirect(url_for("main.home"))
 
 
-@bp.route("/playlist/<playlist_id>", methods=["GET", "POST"])
+@bp.route("/playlist/<playlist_id>")
 @login_required
 def playlist(playlist_id: str):
-    """Display playlist tracks"""
+    """
+    Renders the playlist tracks
+    """
     playlist = spotify.playlist(playlist_id=playlist_id)
     playlists_tracks = []
     for track in playlist["tracks"]["items"]:
@@ -322,28 +342,34 @@ def playlist(playlist_id: str):
     )
 
 
-@bp.route("/playlist/save/<playlist_id>", methods=["GET", "POST"])
+@bp.route("/playlist/save/<playlist_id>")
 @login_required
 def save_playlist(playlist_id: str):
-    """Backup the specified playlist to database and redirect to the playlist page"""
+    """
+    Backup the specified playlist to database and redirect to the playlist page
+    """
     playlist = spotify.playlist(playlist_id=playlist_id)
     api_handler.backup_playlist(playlist=playlist, current_user=current_user)
     flash("Playlist saved to database")
     return redirect(url_for("main.playlist", playlist_id=playlist_id))
 
 
-@bp.route("/playlist/backups", methods=["GET", "POST"])
+@bp.route("/playlist/backups")
 @login_required
 def get_playlist_backups():
-    """Display the user's playlist backups"""
+    """
+    Display the user's playlist backups
+    """
     playlist_backups = api_handler.get_playlist_backups(current_user=current_user)
     return render_template("playlist_backups.html", playlists=playlist_backups)
 
 
-@bp.route("/playlist/restore/<playlist_id>", methods=["POST", "GET"])
+@bp.route("/playlist/restore/<playlist_id>")
 @login_required
 def restore_playlist(playlist_id: str):
-    """Use the backup data to create a new playlist in Spotify and redirect to the playlists page"""
+    """
+    Use the backup data to create a new playlist in Spotify and redirect to the playlists page
+    """
     playlist_data = api_handler.get_backup_data(playlist_id)
     spotify_user_id = session.get("spotify_user_id")
     playlist_title = playlist_data["title"]
