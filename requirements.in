@@ -10,3 +10,4 @@ numpy
 geocoder
 matplotlib
 flask-wtf
+pytest-mock
