@@ -21,29 +21,28 @@ class ApiHandler:
         else:
             flash("User not found")
 
-    def save_tracks_and_artist(self, tracks: list) -> None:
-        """Save tracks and their artists to database and connect them"""
-        for track in tracks:
-            new_track = Track(
-                spotify_id=track["id"], title=track["title"], uri=track["uri"]
-            )
-            if not Track.query.filter_by(spotify_id=track["id"]).first():
-                db.session.add(new_track)
-                db.session.commit()
-                for artist in track["artists"]:
-                    if not Artist.query.filter_by(spotify_id=artist["id"]).first():
-                        new_artist = Artist(
-                            spotify_id=artist["id"],
-                            name=artist["name"] if artist["name"] else artist["type"],
-                        )
-                        db.session.add(new_artist)
-                        new_artist.features.append(new_track)
-                        db.session.commit()
-                    else:
-                        existing_artist = Artist.query.filter_by(
-                            spotify_id=artist["id"]
-                        ).first()
-                        existing_artist.features.append(new_track)
+    def save_track_and_artists(self, track: dict) -> None:
+        """Save track and featured artists to database and connect them"""
+        new_track = Track(
+            spotify_id=track["id"], title=track["title"], uri=track["uri"]
+        )
+        if not Track.query.filter_by(spotify_id=track["id"]).first():
+            db.session.add(new_track)
+            db.session.commit()
+            for artist in track["artists"]:
+                if not Artist.query.filter_by(spotify_id=artist["id"]).first():
+                    new_artist = Artist(
+                        spotify_id=artist["id"],
+                        name=artist["name"] if artist["name"] else artist["type"],
+                    )
+                    db.session.add(new_artist)
+                    new_artist.features.append(new_track)
+                    db.session.commit()
+                else:
+                    existing_artist = Artist.query.filter_by(
+                        spotify_id=artist["id"]
+                    ).first()
+                    existing_artist.features.append(new_track)
 
     def connect_tracks_playlist(self, tracks: list, playlist_id: str) -> None:
         """Save tracks in playlist and connect it to the playlist"""
@@ -101,6 +100,7 @@ class ApiHandler:
                     ],  # Add items to playlist does not rely on track ids but rather the URI, hence why it´s included here
                 }
             )
-        self.save_tracks_and_artist(playlist_tracks)
+        for track in playlist_tracks:
+            self.save_track_and_artists(track)
         self.connect_tracks_playlist(playlist_tracks, playlist_id)
         return playlist_tracks
