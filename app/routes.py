@@ -12,11 +12,11 @@ from app.auth_handler import AuthHandler
 from spotipy import Spotify
 from spotipy import FlaskSessionCacheHandler
 from app.data_processing import list_to_csv, data_plot_to_base64
-from app.api_geo_handler import ApiGeoHandler
+from app.api_weather_handler import ApiWeatherHandler
 from app.utils import validate_pwd
 from app.api_handler import ApiHandler
 
-api_geo_handler = ApiGeoHandler()
+api_weather_handler = ApiWeatherHandler()
 api_handler = ApiHandler()
 auth_handler = AuthHandler()
 cache_handler = FlaskSessionCacheHandler(session)
@@ -105,7 +105,7 @@ def callback():
 @login_required
 def home():
     """Get home profile for user with recent top artists and tracks. Fetch current weather conditions and display a related track in the embedded player."""
-    current_weather = api_geo_handler.get_weather_conditions()
+    current_weather = api_weather_handler.get_weather_conditions()
     weather_track = spotify.search(q=f"{current_weather}", limit=1, type="track")
     weather_track_id = weather_track["tracks"]["items"][0]["id"]
     user_profile = spotify.current_user()
