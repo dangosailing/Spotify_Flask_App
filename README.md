@@ -24,7 +24,9 @@ open meteo - to fetch weather data to display on home page. The current weather 
 **spotipy** - handles auth and spotify api requests\
 **flask** - webserver interface and session storage of token\
 **flask-wtf** - include CSRF protection on forms\
-**pandas, numpy, matplotlib** - handle managing and visualizing data\
+**pandas** - data management\
+**numpy** - data management\
+**matplotlib** - data visualization (ie create the plot)\
 **pytest** - for testing code\
 **pytest-cov** - for testing code coverage (pytest --cov=app tests/)\
 **pytest-mock** - sets up a mock fixture to help test requests against external api (open-meteo for this app)\
@@ -32,12 +34,16 @@ open meteo - to fetch weather data to display on home page. The current weather 
 **geocoder** - get coordinates from local ip for weather API\
 
 # How to run project
-This project requires either to be registered as a user for my spotify application or to create an application on https://developer.spotify.com/
-and use those credentials for CLIENT_ID and CLIENT_SECRET.
-If you want me to add you as a test user. Contact me.
-If you set up your own application in your spotify dashboard make
-sure the REDIRECT_URI you use matches the one in the config file. This is the callback route found in the routes file that ensures the authorization
-token from spotify is properly stored!
+This project requires either to be registered as a user for my spotify application or to create an application on https://developer.spotify.com/.
+You can also contact me if you want to be added as a test user for existing application instead.
+The CLIENT_ID and CLIENT_SECRET are acquired from the registered spotify application along with the REDIRECT_URI. Make sure these line up with what you have in the Config file! 
+## Registering a spotify applicaiton 
+1) Visit https://developer.spotify.com/.
+2) You can use an existing spotify account or create an account to sign in.
+3) Select dashboard -> create app -> fill in required details. When the app is created you access the "User management" tab and add the email and name for the
+spotify account you want to have access. The spotify profile used to register the app itself is automatically registered as an approved user.
+4) Grab the CLIENT_ID, CLIENT_SECRET and REDIRECT_URI and put them in the config file! The REDIRECT_URI is the route that spotify will redirect you back to
+once the authorization is completed and you´re provided the proper access token from spotify. 
 
 ```console
 python -m venv venv
@@ -68,9 +74,8 @@ simulate an API response so the tests to do not contact an exterior
 API when run
 
 # Additional notes
-- Again, the app requires you to register the users (name and email for account) you want to have access to the app in the spotify API dashboard.
+- Again, the app requires you to register the spotify users (name and email for account) you want to have access to the app in the spotify API dashboard.
 - IF RUNNING ON A MAC PORT 5000 MIGHT BE SPOKEN FOR BY AIR PLAY
-- In the rare case you get redirected to login after authorization via spotify try logging in again
 
 # Course specific goals
 
