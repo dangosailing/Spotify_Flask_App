@@ -26,7 +26,6 @@ spotify = Spotify(auth_manager=spotify_auth_manager)
 # ----------------- Main App Routes -----------------
 @bp.route("/")
 def index():
-    flash("Welcome to my Spotify App!")
     return render_template("index.html")
 
 
