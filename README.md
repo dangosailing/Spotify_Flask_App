@@ -76,6 +76,8 @@ API when run
 # Additional notes
 - Again, the app requires you to register the spotify users (name and email for account) you want to have access to the app in the spotify API dashboard.
 - IF RUNNING ON A MAC PORT 5000 MIGHT BE SPOKEN FOR BY AIR PLAY
+- In some cases the user has been re-routed to the login page even after sucessful authorization. If this happens try logging in again 
+and it should work
 
 # Course specific goals
 

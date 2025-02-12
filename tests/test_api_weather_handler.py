@@ -1,8 +1,4 @@
-from app.api_geo import (
-    get_lat_long,
-    get_weather,
-    convert_weather_code,
-)
+from app.api_weather_handler import ApiWeatherHandler
 
 
 def test_get_lat_long():
@@ -11,7 +7,8 @@ def test_get_lat_long():
     WHEN calling the function
     THEN make sure the return value is of list type with correct length and that the values are floats
     """
-    result = get_lat_long()
+    api_weather_handler = ApiWeatherHandler()
+    result = api_weather_handler.get_lat_long()
     assert isinstance(result, list)  # make sure the return type is list
     assert all(
         isinstance(item, float) for item in result
@@ -25,6 +22,7 @@ def test_get_weather_with_fixture(mocker):
     WHEN calling the function with test coordinates
     THEN make sure the return value is a dict that matches the supplied mock response
     """
+    api_weather_handler = ApiWeatherHandler()
     test_coords = [10, -21]
     weather_mock_data = {
         "latitude": -21.0,
@@ -62,7 +60,7 @@ def test_get_weather_with_fixture(mocker):
     # to use our mock data instead of pinging the actual external API
     mocker.patch("requests.get", return_value=mock_response)
 
-    result = get_weather(lat=test_coords[0], long=test_coords[1])
+    result = api_weather_handler.get_weather(lat=test_coords[0], long=test_coords[1])
     assert type(result) is dict
     assert result == weather_mock_data
 
@@ -73,6 +71,7 @@ def test_convert_weather_code() -> str:
     WHEN calling the function with a weather code
     THEN make sure the return value matches the correct weather code value
     """
+    api_weather_handler = ApiWeatherHandler()
     weather_codes = {
         "0": "Clear sky",
         "1": "Mainly clear",
@@ -103,5 +102,5 @@ def test_convert_weather_code() -> str:
         "96": "Thunderstorm with slight hail",
         "99": "Thunderstorm with heavy hail",
     }
-    result = convert_weather_code("45")
+    result = api_weather_handler.convert_weather_code("45")
     assert result == weather_codes["45"]  # Fog
