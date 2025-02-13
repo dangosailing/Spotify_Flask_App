@@ -6,7 +6,7 @@ from app.models import User
 # module - once per module/file
 # session - once per call to pytest 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def test_user():
     username = "John Doe"
     password = "password123"

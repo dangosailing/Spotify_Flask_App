@@ -14,10 +14,10 @@ from spotipy import FlaskSessionCacheHandler
 from app.data_processing import list_to_csv, data_plot_to_base64
 from app.api_weather_handler import ApiWeatherHandler
 from app.utils import validate_pwd
-from app.api_handler import ApiHandler
+from app.spotify_data_handler import Spotify_Data_Handler
 
 api_weather_handler = ApiWeatherHandler()
-api_handler = ApiHandler()
+sp_data_handler = Spotify_Data_Handler()
 auth_handler = AuthHandler()
 cache_handler = FlaskSessionCacheHandler(session)
 spotify_auth_manager = auth_handler.spotify_auth_manager()
@@ -362,7 +362,7 @@ def save_playlist(playlist_id: str):
     Backup the specified playlist to database and redirect to the playlist page
     """
     playlist = spotify.playlist(playlist_id=playlist_id)
-    api_handler.backup_playlist(playlist=playlist, current_user=current_user)
+    sp_data_handler.backup_playlist(playlist=playlist, current_user=current_user)
     flash("Playlist saved to database")
     return redirect(url_for("main.playlist", playlist_id=playlist_id))
 
@@ -373,7 +373,7 @@ def get_playlist_backups():
     """
     Display the user's playlist backups
     """
-    playlist_backups = api_handler.get_playlist_backups(current_user=current_user)
+    playlist_backups = sp_data_handler.get_playlist_backups(current_user=current_user)
     return render_template("playlist_backups.html", playlists=playlist_backups)
 
 
@@ -383,7 +383,7 @@ def restore_playlist(playlist_id: str):
     """
     Use the backup data to create a new playlist in Spotify and redirect to the playlists page
     """
-    playlist_data = api_handler.get_backup_data(playlist_id)
+    playlist_data = sp_data_handler.get_backup_data(playlist_id)
     spotify_user_id = session.get("spotify_user_id")
     playlist_title = playlist_data["title"]
     response = spotify.user_playlist_create(user=spotify_user_id, name=playlist_title)

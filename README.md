@@ -2,6 +2,7 @@
 An app to help manage your playlists and get an overview of your
 spotify profile, favorite artists and favorite tracks:
 - Search and add tracks to recent playlists
+- Create playlists
 - Unfollow playlists
 - Remove specific tracks from playlists
 - You can also create backups of your favorite playlists that are stored in the database that can be used to restore them even if you unfollow them from spotify and loose track of them!
@@ -82,6 +83,7 @@ and it should work
 # Course specific goals
 
 ## Säker programmering - 
+- Relevant API secrets are stored in an config-file added to gitignore. An example config file with relevant keys and non vital information is included in the repo.
 - CSRF management added as an extension to the flask app in app/extensions.py that is created when the app is initialized. Each form (see template files: home, login, register, playlist and search results) contains a hiddden input for the csrf token.
 - The app uses protected routes (login required decorator) for all routes except index, login and register
 - Password validation to ensure a relatively strong password during user registraton (app/utils.py)
@@ -101,8 +103,8 @@ spotify player in the home route
 
 ## Enhetstestning och felsökning 
 pytest used to test: 
-- the create_user method in the auth_handler (ensure the password is not stored in clear text). This applies the test_user fixture\
-- the api_geo module methods. A mock fixture is included in one of the
+- the create_user method in the auth_handler (ensure the password is not stored in clear text). This applies the test_user fixture in tests/conftest.py\
+- the api_weather_handler module methods. A mock fixture is included in one of the
 tests here to simulate a response from the open-meteo API using the 
 pytest-mock library
 

@@ -10,13 +10,13 @@ def create_app(config: Config) -> Flask:
 
     # Store our configurations in the Flask app
     app.config.from_object(config)
-    # Registers all the routes in the app's blueprint
-    # Login
-    login_manager.init_app(app)
-    csrf.init_app(app)
     with app.app_context():
         from . import models
-
+        # Handles flask login
+        login_manager.init_app(app)
+        # CSRF token handling
+        csrf.init_app(app)
+        # Registers all the routes in the app's blueprint
         app.register_blueprint(bp)
         db.init_app(app)
         db.create_all()

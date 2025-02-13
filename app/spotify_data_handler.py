@@ -4,7 +4,7 @@ from flask_login import current_user
 from flask import flash
 
 
-class ApiHandler:
+class Spotify_Data_Handler:
     def create_playlist(self, playlist: dict, current_user: dict) -> None:
         """Creates playlist and appends it to the current user"""
         user = User.query.filter_by(id=current_user.id).first()

@@ -6,7 +6,7 @@ from flask_login import UserMixin
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-
+#---- Assiociation tables/Relationships
 user_playlist = db.Table(
     "user_playlist",
     db.Column("user_id", db.Integer, db.ForeignKey("user.id")),
@@ -25,7 +25,7 @@ artist_track = db.Table(
     db.Column("track_id", db.String(100), db.ForeignKey("track.spotify_id")),
 )
 
-
+#---- Models
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), nullable=False)
