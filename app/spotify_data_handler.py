@@ -5,7 +5,7 @@ from flask import flash
 
 
 class Spotify_Data_Handler:
-    def create_playlist(self, playlist: dict, current_user: dict) -> None:
+    def save_playlist(self, playlist: dict, current_user: dict) -> None:
         """Creates playlist and appends it to the current user"""
         user = User.query.filter_by(id=current_user.id).first()
         if user:
@@ -87,17 +87,15 @@ class Spotify_Data_Handler:
     ) -> None:
         """Saves a backup of the playlist together with the featured tracks and artists"""
         playlist_id = playlist["id"]
-        self.create_playlist(playlist, current_user)
+        self.save_playlist(playlist, current_user)
         playlist_tracks = []
-        for track in playlist["tracks"]["items"]:
+        for track in playlist["tracks"]:
             playlist_tracks.append(
                 {
-                    "title": track["track"]["name"],
-                    "artists": track["track"]["artists"],
-                    "id": track["track"]["id"],
-                    "uri": track["track"][
-                        "uri"
-                    ],  # Add items to playlist does not rely on track ids but rather the URI, hence why it´s included here
+                    "title": track["name"],
+                    "artists": track["artists"],
+                    "id": track["id"],
+                    "uri": track["uri"],
                 }
             )
         for track in playlist_tracks:
