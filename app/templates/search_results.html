@@ -5,14 +5,6 @@
 <h4>Query: {{ query }}</h4>
 
 <div>
-  <form action="{{ url_for('main.search') }}" method="post">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-    <input type="query" name="query" placeholder="Search tracks" required />
-    <button type="submit">Search</button>
-  </form>
-</div>
-<a class="home-link" href="{{ url_for('main.home') }}">Home</a>
-<a class="logout-link" href="{{ url_for('main.logout') }}">Logout</a>
 
 <div class="results-container">
   <ul class="results-list">
