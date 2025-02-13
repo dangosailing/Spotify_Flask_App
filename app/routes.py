@@ -342,6 +342,19 @@ def playlist(playlist_id: str):
     )
 
 
+@bp.route("/playlist/new", methods=["POST"])
+@login_required
+def new_playlist():
+    """
+    POST: Create new playlist
+    """
+    if request.method == "POST":
+        name = request.form["name"] 
+        spotify_user_id = session.get("spotify_user_id")
+        spotify.user_playlist_create(user=spotify_user_id, name=name)
+        flash("New playlist created. Use the search function to populate it with your favorite tracks")
+    return redirect(url_for("main.playlists"))
+
 @bp.route("/playlist/save/<playlist_id>")
 @login_required
 def save_playlist(playlist_id: str):

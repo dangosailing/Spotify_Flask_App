@@ -245,3 +245,7 @@ button {
 .result-item-info {
   padding: 10px;
 }
+
+.container-new-playlist {
+  display: flex;
+}
